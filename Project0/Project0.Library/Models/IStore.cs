@@ -6,7 +6,7 @@ namespace Project0.Library.Models {
     public interface IStore {
 
         List<ILocation> Locations { get; }
-        IDictionary<string, IUser> Customers { get; }
+        IDictionary<string, Customer> Customers { get; }
         ICollection<IOrder> OrderHistory { get; }
 
         bool PlaceOrder(IOrder order);

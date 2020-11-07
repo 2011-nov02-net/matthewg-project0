@@ -5,43 +5,42 @@ using System.Text;
 namespace Project0.Library.Models {
     public class Customer : IUser {
 
-        private static int _seed = 0;
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Id { get; }
-        public IDictionary<int, int> Cart { get; set; }
+        public IDictionary<IProduct, int> Cart { get; set; }
         public ILocation CurrentLocation { get; set; }
 
-        public Customer(string first_name, string last_name) {
+        public Customer(string first_name, string last_name, string id) {
             FirstName = first_name;
             LastName = last_name;
-            Id = $"{++_seed}";
-            Cart = new Dictionary<int, int>();
+            Id = id;
+            Cart = new Dictionary<IProduct, int>();
             CurrentLocation = null;
         }
 
-        public bool AddToCart(int product_id, int qty) {
-            if (CurrentLocation.Stock.ContainsKey(product_id) && CurrentLocation.Stock[product_id] >= qty) {
-                if (Cart.ContainsKey(product_id)) {
-                    Cart[product_id] += qty;
+        public bool AddToCart(IProduct product, int qty) {
+            if (CurrentLocation.Stock.ContainsKey(product) && CurrentLocation.Stock[product] >= qty) {
+                if (Cart.ContainsKey(product)) {
+                    Cart[product] += qty;
                 } else {
-                    Cart.Add(product_id, qty);
+                    Cart.Add(product, qty);
                 }
-                CurrentLocation.AddStock(product_id, -qty);
+                CurrentLocation.AddStock(product, -qty);
                 return true;
             }
             return false;
         }
 
-        public bool RemoveFromCart(int product_id, int qty) {
-            if (Cart.ContainsKey(product_id)) {
-                if (Cart[product_id] > qty) {
-                    Cart[product_id] -= qty;
+        public bool RemoveFromCart(IProduct product, int qty) {
+            if (Cart.ContainsKey(product)) {
+                if (Cart[product] > qty) {
+                    Cart[product] -= qty;
 
-                } else if (Cart[product_id] == qty) {
-                    Cart.Remove(product_id);
+                } else if (Cart[product] == qty) {
+                    Cart.Remove(product);
                 }
-                CurrentLocation.AddStock(product_id, qty);
+                CurrentLocation.AddStock(product, qty);
                 return true;
             }
             return false;
@@ -52,13 +51,13 @@ namespace Project0.Library.Models {
         }
 
         public void EmptyCart() {
-            foreach (int product_id in Cart.Keys) {
-                RemoveFromCart(product_id, Cart[product_id]);
+            foreach (var product in Cart.Keys) {
+                RemoveFromCart(product, Cart[product]);
             }
         }
 
         public void NewCart() {
-            Cart = new Dictionary<int, int>();
+            Cart = new Dictionary<IProduct, int>();
         }
 
         public void LeaveStore() {

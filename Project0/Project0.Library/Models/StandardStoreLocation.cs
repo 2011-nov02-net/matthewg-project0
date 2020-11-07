@@ -7,24 +7,24 @@ namespace Project0.Library.Models {
 
         private IStore _store;
         public string Name { get; }
-        public IDictionary<int, int> Stock { get; }
+        public IDictionary<IProduct, int> Stock { get; }
 
         public StandardStoreLocation(string name, IStore store) {
             Name = name;
             _store = store;
-            Stock = new Dictionary<int, int>();
+            Stock = new Dictionary<IProduct, int>();
         }
 
         public bool PlaceOrder(Customer customer) {
             return _store.PlaceOrder(new Order(this, customer, DateTime.Now));
         }
 
-        public bool AddStock(int product_id, int qty) {
-            if (Stock.ContainsKey(product_id)) {
-                Stock[product_id] += qty;
+        public bool AddStock(IProduct product, int qty) {
+            if (Stock.ContainsKey(product)) {
+                Stock[product] += qty;
                 return true;
             } else if (qty > 0) {
-                Stock.Add(product_id, qty);
+                Stock.Add(product, qty);
                 return true;
             }
             return false;

@@ -5,7 +5,7 @@ using System.Text;
 namespace Project0.Library.Models {
     public class Order : IOrder {
 
-        public IDictionary<int, int> Products { get; }
+        public IDictionary<IProduct, int> Products { get; }
         public ILocation Location { get; }
         public Customer Customer { get; }
         public DateTime Time { get; }
