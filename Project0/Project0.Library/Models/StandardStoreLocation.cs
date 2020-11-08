@@ -15,7 +15,7 @@ namespace Project0.Library.Models {
             Stock = new Dictionary<IProduct, int>();
         }
 
-        public bool PlaceOrder(Customer customer) {
+        public IOrder PlaceOrder(Customer customer) {
             return _store.PlaceOrder(new Order(this, customer, DateTime.Now));
         }
 

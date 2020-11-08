@@ -15,6 +15,8 @@ namespace Project0.Library.Models {
             private set { 
                 if (value <= 0) {
                     throw new ArgumentOutOfRangeException("value", "price must be positive");
+                } else {
+                    _price = value;
                 }
             }
         }

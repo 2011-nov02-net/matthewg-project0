@@ -15,6 +15,7 @@ namespace Project0.Library {
         }
 
         public void Launch() {
+            _prompts.WelcomeMessage();
             while (true) {
                 IUser user = null;
                 while (user == null) {
@@ -39,10 +40,10 @@ namespace Project0.Library {
                 response = _prompts.StoreEntryPrompt(_interpreter, customer);
                 if (response == null) {
                     return;
+                } else if (response == false) {
+                    response = SendCustomerToStoreLocation(customer);
                 }
             }
-
-            SendCustomerToStoreLocation(customer);
         }
 
         private void LoginAdmin() {
@@ -55,14 +56,17 @@ namespace Project0.Library {
             }
         }
 
-        private void SendCustomerToStoreLocation(Customer customer) {
+        private bool SendCustomerToStoreLocation(Customer customer) {
             bool? response = true;
             while (response ?? true) {
                 response = _prompts.LocationInventoryPrompt(_interpreter, customer);
                 if (response == null) {
-                    break;
+                    return true;
                 }
             }
+
+            _prompts.CheckoutPrompt(customer.LastOrder);
+            return false;
         }
     }
 }

@@ -21,6 +21,14 @@ namespace Project0.Library {
 
         bool NewStoreLocation(IUserInputInterpreter interpreter);
 
+        bool RestockPrompt(IUserInputInterpreter interpreter);
+
+        bool NewProductPrompt(IUserInputInterpreter interpreter);
+
         bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer);
+
+        void CheckoutPrompt(IOrder order);
+
+        bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer);
     }
 }

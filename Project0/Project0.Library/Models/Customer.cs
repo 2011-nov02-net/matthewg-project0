@@ -10,6 +10,7 @@ namespace Project0.Library.Models {
         public string Id { get; }
         public IDictionary<IProduct, int> Cart { get; set; }
         public ILocation CurrentLocation { get; set; }
+        public IOrder LastOrder { get; set; }
 
         public Customer(string first_name, string last_name, string id) {
             FirstName = first_name;
@@ -46,7 +47,7 @@ namespace Project0.Library.Models {
             return false;
         }
 
-        public bool PlaceOrder() {
+        public IOrder PlaceOrder() {
             return CurrentLocation.PlaceOrder(this);
         }
 

@@ -8,7 +8,7 @@ namespace Project0.Library.Models {
         string Name { get; }
         IDictionary<IProduct, int> Stock { get; }
 
-        bool PlaceOrder(Customer customer);
+        IOrder PlaceOrder(Customer customer);
         bool AddStock(IProduct product, int qty);
     }
 }

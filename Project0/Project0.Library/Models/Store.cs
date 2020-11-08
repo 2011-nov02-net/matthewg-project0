@@ -6,6 +6,8 @@ namespace Project0.Library.Models {
     public class Store : IStore {
 
         private int _customer_ID_seed;
+        private int _product_ID_seed;
+        public List<IProduct> Products { get; }
         public List<ILocation> Locations { get; }
 
         public IDictionary<string, Customer> Customers { get; }
@@ -13,16 +15,17 @@ namespace Project0.Library.Models {
         public ICollection<IOrder> OrderHistory { get; }
 
         public Store() {
+            Products = new List<IProduct>();
             Locations = new List<ILocation>();
             Customers = new Dictionary<string, Customer>();
             OrderHistory = new List<IOrder>();
             _customer_ID_seed = 0;
         }
 
-        public bool PlaceOrder(IOrder order) {
+        public IOrder PlaceOrder(IOrder order) {
             OrderHistory.Add(order);
             order.Customer.NewCart();
-            return true;
+            return order;
         }
 
         public bool AddStandardLocation(string name) {
@@ -41,5 +44,12 @@ namespace Project0.Library.Models {
             return customer;
         }
 
+        public bool AddStock(ILocation location, IProduct product, int qty) {
+            return location.AddStock(product, qty);
+        }
+
+        public void AddProduct(string name, double price) {
+            Products.Add(new Product(++_product_ID_seed, name, price));
+        }
     }
 }
