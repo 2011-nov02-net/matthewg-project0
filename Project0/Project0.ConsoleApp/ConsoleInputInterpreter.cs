@@ -30,6 +30,7 @@ namespace Project0.ConsoleApp {
                 return new_user;
             }
             if (s.Equals("q", StringComparison.OrdinalIgnoreCase)) {
+                DataPersistence.Write(store, "../../../store_data.json");
                 Environment.Exit(0);
             }
             Console.WriteLine("Invalid input.");
