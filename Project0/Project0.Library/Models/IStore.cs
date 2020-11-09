@@ -15,5 +15,7 @@ namespace Project0.Library.Models {
         Customer AddCustomer(string first_name, string last_name, string email);
         void AddProduct(string name, double price);
         bool AddStock(ILocation location, IProduct product, int qty);
+        ICollection<IUser> SearchCustomerByName(string s);
+        ICollection<IOrder> SearchOrderHistoryByCustomer(IUser customer);
     }
 }

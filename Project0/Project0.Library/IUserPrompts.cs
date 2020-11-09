@@ -25,6 +25,10 @@ namespace Project0.Library {
 
         bool NewProductPrompt(IUserInputInterpreter interpreter);
 
+        bool UserLookupPrompt(IUserInputInterpreter interpreter);
+
+        bool PrintOrderHistory(Customer customer);
+
         bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer);
 
         void CheckoutPrompt(IOrder order);

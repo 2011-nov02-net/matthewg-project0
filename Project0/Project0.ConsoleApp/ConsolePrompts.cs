@@ -41,7 +41,7 @@ namespace Project0.ConsoleApp {
                 return null;
             }
             Console.WriteLine($"Welcome {new_customer.FirstName} {new_customer.LastName}.\n" +
-                $"Your user account has been created. Please use your email, {new_customer.Email} to sign in from now on.");
+                $"Your user account has been created. Please use your email, {new_customer.Email} to sign in from now on.\n");
             return new_customer;
         }
 
@@ -55,13 +55,20 @@ namespace Project0.ConsoleApp {
             foreach (var loc in Store.Locations) {
                 Console.WriteLine($"[{i++}] {loc.Name}");
             }
+            Console.WriteLine("[history] View order history");
             Console.WriteLine("[logout] Exit session.");
             string input = Console.ReadLine();
             return interpreter.ValidLocation(input, Store, customer, out _);
         }
 
         public bool? AdminPrompt(IUserInputInterpreter interpreter) {
-            Console.WriteLine("What would you like to do?\n[0] Add new store location\n[1] Restock stores\n[2] Add new product\n[logout] Exit session.");
+            Console.WriteLine("What would you like to do?");
+            Console.WriteLine("[0] Add new store location");
+            Console.WriteLine("[1] Restock stores");
+            Console.WriteLine("[2] Add new product");
+            Console.WriteLine("[3] Search users");
+            Console.WriteLine("[4] View order history");
+            Console.WriteLine("[logout] Exit session.");
             string input = Console.ReadLine();
             return interpreter.ValidAdminCommand(input, Store);
         }
@@ -158,13 +165,47 @@ namespace Project0.ConsoleApp {
             return interpreter.GenerateProduct(product_name, Store, price);
         }
 
+        public bool UserLookupPrompt(IUserInputInterpreter interpreter) {
+            Console.WriteLine("Enter a user's name.");
+            string input = Console.ReadLine();
+            ICollection<IUser> users = interpreter.UserLookup(input, Store);
+            foreach (var user in users) {
+                Console.WriteLine($"{user.LastName}, {user.FirstName} - {user.Email}");
+            }
+            Console.WriteLine();
+            return true;
+        }
+
+        public bool PrintOrderHistory(Customer customer) {
+            ICollection<IOrder> orders;
+            if (customer == null) {
+                orders = Store.OrderHistory;
+            } else {
+                orders = Store.SearchOrderHistoryByCustomer(customer);
+            }
+            Console.WriteLine();
+            foreach (var order in orders) {
+                Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");
+                double total_price = 0;
+                foreach (var item in order.Products) {
+                    double item_price = item.Key.Price * item.Value;
+                    total_price += item_price;
+                    Console.WriteLine($"{item.Key.DisplayName} x{item.Value} - {item_price:c}");
+                }
+                Console.WriteLine($"Total: {total_price:c}");
+                Console.WriteLine();
+            }
+            return true;
+        }
+
         public bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer) {
-            Console.WriteLine($"Signed in as {customer.FirstName} {customer.LastName}, shopping at {customer.CurrentLocation.Name}.");
+            Console.WriteLine($"\nSigned in as {customer.FirstName} {customer.LastName}, shopping at {customer.CurrentLocation.Name}.");
             Console.WriteLine("Select an item you would like to purchase. Enter [cart] to view/modify your cart, or [leave] to abandon your cart.");
             int i = 0;
             foreach (var item in customer.CurrentLocation.Stock) {
-                Console.WriteLine($"[{i++}] {item.Key.DisplayName} - {item.Value} in stock");
+                Console.WriteLine($"[{i++}] {item.Key.DisplayName}, {item.Key.Price:c} - {item.Value} in stock");
             }
+            Console.WriteLine();
             string input = Console.ReadLine();
             var store_item = interpreter.ProductSelection(input, customer, out int exit_status);
             if (exit_status == 1) {
@@ -182,8 +223,8 @@ namespace Project0.ConsoleApp {
         }
 
         public void CheckoutPrompt(IOrder order) {
-            Console.WriteLine("Thank you for your purchase. Order details below:");
-            Console.WriteLine($"Store Location: {order.Location.Name}");
+            Console.WriteLine("\nThank you for your purchase. Order details below:\n");
+            Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");
             double total_price = 0;
             foreach (var item in order.Products) {
                 double item_price = item.Key.Price * item.Value;
@@ -194,7 +235,7 @@ namespace Project0.ConsoleApp {
         }
 
         public bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer) {
-            Console.WriteLine("Enter [remove] to remove an item from your cart, [checkout] to complete your order, or [back] to continue shopping.");
+            Console.WriteLine("\nEnter [remove] to remove an item from your cart, [checkout] to complete your order, or [back] to continue shopping.\n");
             Console.WriteLine("Your Cart:");
             foreach (var item in customer.Cart) {
                 Console.WriteLine($"{item.Key.DisplayName} x{item.Value}");

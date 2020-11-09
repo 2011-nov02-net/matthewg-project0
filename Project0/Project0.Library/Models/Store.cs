@@ -5,7 +5,6 @@ using System.Text;
 namespace Project0.Library.Models {
     public class Store : IStore {
 
-        // private int _customer_ID_seed;
         private int _product_ID_seed;
         public List<IProduct> Products { get; }
         public List<ILocation> Locations { get; }
@@ -19,7 +18,6 @@ namespace Project0.Library.Models {
             Locations = new List<ILocation>();
             Customers = new Dictionary<string, Customer>();
             OrderHistory = new List<IOrder>();
-            // _customer_ID_seed = 0;
         }
 
         public IOrder PlaceOrder(IOrder order) {
@@ -50,6 +48,28 @@ namespace Project0.Library.Models {
 
         public void AddProduct(string name, double price) {
             Products.Add(new Product(++_product_ID_seed, name, price));
+        }
+
+        public ICollection<IUser> SearchCustomerByName(string s) {
+            ICollection<IUser> users = new HashSet<IUser>();
+            foreach (var customer in Customers) {
+                string customer_name = $"{customer.Value.FirstName} {customer.Value.LastName}";
+
+                if (customer_name.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0) {
+                    users.Add(customer.Value);
+                }
+            }
+            return users;
+        }
+
+        public ICollection<IOrder> SearchOrderHistoryByCustomer(IUser customer) {
+            ICollection<IOrder> orders = new HashSet<IOrder>();
+            foreach (var order in OrderHistory) {
+                if (order.Customer == customer) {
+                    orders.Add(order);
+                }
+            }
+            return orders;
         }
     }
 }

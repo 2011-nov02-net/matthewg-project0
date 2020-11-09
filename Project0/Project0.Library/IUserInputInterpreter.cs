@@ -26,6 +26,8 @@ namespace Project0.Library {
 
         bool GenerateProduct(string s, IStore store, double price);
 
+        ICollection<IUser> UserLookup(string s, IStore store);
+
         KeyValuePair<IProduct, int>? ProductSelection(string s, Customer customer, out int exit_status);
 
         bool QuantitySelection(string s, KeyValuePair<IProduct, int>? purchase_item, Customer customer);

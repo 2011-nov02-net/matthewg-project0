@@ -57,6 +57,10 @@ namespace Project0.ConsoleApp {
                 location = null;
                 return null;
             }
+            if (s.Equals("history", StringComparison.OrdinalIgnoreCase)) {
+                location = null;
+                return Prompts.PrintOrderHistory(customer);
+            }
             if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
                 location = null;
                 return null;
@@ -106,6 +110,12 @@ namespace Project0.ConsoleApp {
             if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
                 return Prompts.NewProductPrompt(this);
             }
+            if (s.Equals("3", StringComparison.OrdinalIgnoreCase)) {
+                return Prompts.UserLookupPrompt(this);
+            }
+            if (s.Equals("4", StringComparison.OrdinalIgnoreCase)) {
+                return Prompts.PrintOrderHistory(null);
+            }
             return false;
         }
 
@@ -120,6 +130,10 @@ namespace Project0.ConsoleApp {
         public bool GenerateProduct(string s, IStore store, double price) {
             store.AddProduct(s, price);
             return true;
+        }
+
+        public ICollection<IUser> UserLookup(string s, IStore store) {
+            return store.SearchCustomerByName(s);
         }
 
         public KeyValuePair<IProduct, int>? ProductSelection(string s, Customer customer, out int exit_status) {
