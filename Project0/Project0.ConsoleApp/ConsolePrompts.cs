@@ -18,7 +18,7 @@ namespace Project0.ConsoleApp {
         }
 
         public IUser StartupPrompt(IUserInputInterpreter interpreter) {
-            Console.WriteLine("\nEnter your user ID or 'register' if you are a new customer. Enter [Q] to quit.");
+            Console.WriteLine("\nEnter your email address or 'register' if you are a new customer. Enter [Q] to quit.");
             string input = Console.ReadLine();
             return interpreter.ValidUserID(input, Store);
         }
@@ -26,13 +26,22 @@ namespace Project0.ConsoleApp {
         public IUser RegisterPrompt(IUserInputInterpreter interpreter) {
             Console.WriteLine("Enter your first and last name separated by a space.");
             string input = Console.ReadLine();
-            var new_customer = interpreter.RegisterCustomer(input, Store);
-            if (new_customer == null) {
+
+            string[] name = interpreter.ParseName(input);
+            if (name == null) {
                 Console.WriteLine("Invalid name.");
                 return null;
             }
+
+            Console.WriteLine("Enter your email address.");
+            input = Console.ReadLine();
+            var new_customer = interpreter.RegisterCustomer(name, input, Store);
+            if (new_customer == null) {
+                Console.WriteLine("Invalid email address or address is already in use.");
+                return null;
+            }
             Console.WriteLine($"Welcome {new_customer.FirstName} {new_customer.LastName}.\n" +
-                $"Your new user ID is {new_customer.Id}, use this to sign in from now on.");
+                $"Your user account has been created. Please use your email, {new_customer.Email} to sign in from now on.");
             return new_customer;
         }
 

@@ -6,12 +6,12 @@ namespace Project0.Library.Models {
     public class Admin : IUser {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Id { get; }
+        public string Email { get; }
 
         public Admin() {
             FirstName = "admin";
             LastName = "";
-            Id = "0000a";
+            Email = "a@example.net";
         }
     }
 }

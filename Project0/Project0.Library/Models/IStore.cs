@@ -12,7 +12,7 @@ namespace Project0.Library.Models {
 
         IOrder PlaceOrder(IOrder order);
         bool AddStandardLocation(string name);
-        Customer AddCustomer(string first_name, string last_name);
+        Customer AddCustomer(string first_name, string last_name, string email);
         void AddProduct(string name, double price);
         bool AddStock(ILocation location, IProduct product, int qty);
     }

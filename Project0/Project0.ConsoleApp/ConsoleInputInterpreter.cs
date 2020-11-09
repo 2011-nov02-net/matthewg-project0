@@ -36,13 +36,20 @@ namespace Project0.ConsoleApp {
             return null;
         }
 
-        public Customer RegisterCustomer(string s, IStore store) {
+        public string[] ParseName(string s) {
             string pattern = "\\w\\s{1}\\w";
             if (!System.Text.RegularExpressions.Regex.IsMatch(s, pattern)) {
                 return null;
             }
-            string[] name = s.Split(" ");
-            return store.AddCustomer(name[0], name[1]);
+            return s.Split(" ");
+        }
+
+        public Customer RegisterCustomer(string[] name, string s, IStore store) {
+            string pattern = "(.+)(@)(.+)[.](.+)"; // email regex
+            if (!System.Text.RegularExpressions.Regex.IsMatch(s, pattern)) {
+                return null;
+            }
+            return store.AddCustomer(name[0], name[1], s);
         }
 
         public bool? ValidLocation(string s, IStore store, Customer customer, out ILocation location) {

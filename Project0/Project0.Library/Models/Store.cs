@@ -5,7 +5,7 @@ using System.Text;
 namespace Project0.Library.Models {
     public class Store : IStore {
 
-        private int _customer_ID_seed;
+        // private int _customer_ID_seed;
         private int _product_ID_seed;
         public List<IProduct> Products { get; }
         public List<ILocation> Locations { get; }
@@ -19,7 +19,7 @@ namespace Project0.Library.Models {
             Locations = new List<ILocation>();
             Customers = new Dictionary<string, Customer>();
             OrderHistory = new List<IOrder>();
-            _customer_ID_seed = 0;
+            // _customer_ID_seed = 0;
         }
 
         public IOrder PlaceOrder(IOrder order) {
@@ -38,9 +38,9 @@ namespace Project0.Library.Models {
             Locations.Add(new StandardStoreLocation(name, this));
             return true;
         }
-        public Customer AddCustomer(string first_name, string last_name) {
-            var customer = new Customer(first_name, last_name, $"{++_customer_ID_seed}");
-            Customers.Add(customer.Id, customer);
+        public Customer AddCustomer(string first_name, string last_name, string email) {
+            var customer = new Customer(first_name, last_name, email);
+            Customers.Add(email, customer);
             return customer;
         }
 

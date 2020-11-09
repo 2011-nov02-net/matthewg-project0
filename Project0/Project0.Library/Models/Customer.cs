@@ -7,15 +7,15 @@ namespace Project0.Library.Models {
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Id { get; }
+        public string Email { get; }
         public IDictionary<IProduct, int> Cart { get; set; }
         public ILocation CurrentLocation { get; set; }
         public IOrder LastOrder { get; set; }
 
-        public Customer(string first_name, string last_name, string id) {
+        public Customer(string first_name, string last_name, string email) {
             FirstName = first_name;
             LastName = last_name;
-            Id = id;
+            Email = email;
             Cart = new Dictionary<IProduct, int>();
             CurrentLocation = null;
         }

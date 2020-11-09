@@ -7,6 +7,6 @@ namespace Project0.Library.Models {
 
         string FirstName { get; set; }
         string LastName { get; set; }
-        string Id { get; }
+        string Email { get; }
     }
 }

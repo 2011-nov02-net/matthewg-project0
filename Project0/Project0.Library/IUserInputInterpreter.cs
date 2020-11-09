@@ -10,7 +10,9 @@ namespace Project0.Library {
 
         IUser ValidUserID(string s, IStore store);
 
-        Customer RegisterCustomer(string s, IStore store);
+        string[] ParseName(string s);
+
+        Customer RegisterCustomer(string[] name, string s, IStore store);
 
         bool? ValidLocation(string s, IStore store, Customer customer, out ILocation location);
 
