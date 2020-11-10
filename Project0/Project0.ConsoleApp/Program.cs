@@ -6,8 +6,8 @@ using Project0.Library.Models;
 namespace Project0.ConsoleApp {
     class Program {
         static void Main(string[] args) {
-            string path = args[0];
-            // path = "../../../store_data.json";
+            //string path = args[0];
+            string path = "../../../store_data.xml";
             IStore store = DataPersistence.Read(path);
             var prompts = new ConsolePrompts(store);
             var interpreter = new ConsoleInputInterpreter(prompts);

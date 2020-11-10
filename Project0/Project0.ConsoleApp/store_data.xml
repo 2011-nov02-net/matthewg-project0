@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Store xmlns:i="http://www.w3.org/2001/XMLSchema-instance" z:Id="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/">
+  <Customers xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <Locations xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:anyType xmlns:d3p1="http://schemas.datacontract.org/2004/07/Project0.Library.Models" i:type="d3p1:Location">
+      <d3p1:Name>Walmart - Winston-Salem, NC</d3p1:Name>
+      <d3p1:Stock />
+      <d3p1:Store z:Ref="i1" />
+    </d2p1:anyType>
+  </Locations>
+  <OrderHistory xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <Products xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:anyType xmlns:d3p1="http://schemas.datacontract.org/2004/07/Project0.Library.Models" i:type="d3p1:Product">
+      <d3p1:DisplayName>Laptop</d3p1:DisplayName>
+      <d3p1:Id>1001</d3p1:Id>
+      <d3p1:Price>300</d3p1:Price>
+    </d2p1:anyType>
+  </Products>
+  <_product_ID_seed>1001</_product_ID_seed>
+</Store>

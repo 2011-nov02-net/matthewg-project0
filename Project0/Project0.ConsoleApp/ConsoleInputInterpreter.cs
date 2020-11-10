@@ -15,9 +15,10 @@ namespace Project0.ConsoleApp {
         }
 
         public IUser ValidUserID(string s, IStore store) {
-            if (store.Customers.ContainsKey(s)) {
-                Prompts.ReturningCustomerPrompt(store.Customers[s]);
-                return store.Customers[s];
+            var customer = store.SearchCustomerByEmail(s);
+            if (customer != null) {
+                Prompts.ReturningCustomerPrompt(customer);
+                return customer;
             }
             if (s.Equals("admin", StringComparison.OrdinalIgnoreCase)) {
                 return new Admin();
@@ -30,7 +31,7 @@ namespace Project0.ConsoleApp {
                 return new_user;
             }
             if (s.Equals("q", StringComparison.OrdinalIgnoreCase)) {
-                DataPersistence.Write(store, "../../../store_data.json");
+                DataPersistence.Write(store, "../../../store_data.xml");
                 Environment.Exit(0);
             }
             Console.WriteLine("Invalid input.");
@@ -50,7 +51,13 @@ namespace Project0.ConsoleApp {
             if (!System.Text.RegularExpressions.Regex.IsMatch(s, pattern)) {
                 return null;
             }
-            return store.AddCustomer(name[0], name[1], s);
+            Customer customer;
+            try {
+                customer = store.AddCustomer(name[0], name[1], s);
+            } catch (ArgumentException) {
+                return null;
+            }
+            return customer;
         }
 
         public bool? ValidLocation(string s, IStore store, Customer customer, out ILocation location) {
@@ -188,6 +195,7 @@ namespace Project0.ConsoleApp {
             }
             if (s.Equals("checkout", StringComparison.OrdinalIgnoreCase)) {
                 customer.LastOrder = customer.PlaceOrder();
+                customer.CurrentLocation = null;
                 return false;
             }
             if (s.Equals("back", StringComparison.OrdinalIgnoreCase)) {

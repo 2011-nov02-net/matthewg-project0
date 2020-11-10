@@ -7,15 +7,16 @@ namespace Project0.Library.Models {
 
         List<IProduct> Products { get; }
         List<ILocation> Locations { get; }
-        IDictionary<string, Customer> Customers { get; }
-        ICollection<IOrder> OrderHistory { get; }
+        List<IUser> Customers { get; }
+        List<IOrder> OrderHistory { get; }
 
-        IOrder PlaceOrder(IOrder order);
+        IOrder PlaceOrder(Order order);
         bool AddStandardLocation(string name);
         Customer AddCustomer(string first_name, string last_name, string email);
         void AddProduct(string name, double price);
         bool AddStock(ILocation location, IProduct product, int qty);
         ICollection<IUser> SearchCustomerByName(string s);
+        IUser SearchCustomerByEmail(string s);
         ICollection<IOrder> SearchOrderHistoryByCustomer(IUser customer);
     }
 }

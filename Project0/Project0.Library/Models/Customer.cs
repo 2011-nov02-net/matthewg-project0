@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Project0.Library.Models {
     public class Customer : IUser {
-
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; }
-        public IDictionary<IProduct, int> Cart { get; set; }
+        public string Email { get; set; }
+        public Dictionary<IProduct, int> Cart { get; set; }
         public ILocation CurrentLocation { get; set; }
         public IOrder LastOrder { get; set; }
+
+        public Customer() { }
 
         public Customer(string first_name, string last_name, string email) {
             FirstName = first_name;

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Project0.Library.Models {
     public class Order : IOrder {
+        public Dictionary<IProduct, int> Products { get; set; }
+        public ILocation Location { get; set; }
+        public Customer Customer { get; set; }
+        public DateTime Time { get; set; }
 
-        public IDictionary<IProduct, int> Products { get; }
-        public ILocation Location { get; }
-        public Customer Customer { get; }
-        public DateTime Time { get; }
+        public Order() { }
 
         public Order(ILocation location, Customer customer, DateTime time) {
             Products = customer.Cart;

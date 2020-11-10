@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Project0.Library.Models {
-    public class StandardStoreLocation : ILocation {
+    public class Location : ILocation {
+        
+        public IStore Store { get; set; }
+        public string Name { get; set; }
+        public Dictionary<IProduct, int> Stock { get; set; }
 
-        private IStore _store;
-        public string Name { get; }
-        public IDictionary<IProduct, int> Stock { get; }
+        public Location() { }
 
-        public StandardStoreLocation(string name, IStore store) {
+        public Location(string name, IStore store) {
             Name = name;
-            _store = store;
+            Store = store;
             Stock = new Dictionary<IProduct, int>();
         }
 
         public IOrder PlaceOrder(Customer customer) {
-            return _store.PlaceOrder(new Order(this, customer, DateTime.Now));
+            return Store.PlaceOrder(new Order(this, customer, DateTime.Now));
         }
 
         public bool AddStock(IProduct product, int qty) {

@@ -6,7 +6,7 @@ namespace Project0.Library.Models {
     public interface ILocation {
 
         string Name { get; }
-        IDictionary<IProduct, int> Stock { get; }
+        Dictionary<IProduct, int> Stock { get; }
 
         IOrder PlaceOrder(Customer customer);
         bool AddStock(IProduct product, int qty);

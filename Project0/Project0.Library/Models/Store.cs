@@ -1,26 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Project0.Library.Models {
+    [DataContract(Name = "Store", Namespace = "", IsReference = true)]
+    [KnownType(typeof(Customer))]
+    [KnownType(typeof(Location))]
+    [KnownType(typeof(Order))]
+    [KnownType(typeof(Product))]
     public class Store : IStore {
-
+        [DataMember(Name = "_product_ID_seed")]
         private int _product_ID_seed;
-        public List<IProduct> Products { get; }
-        public List<ILocation> Locations { get; }
 
-        public IDictionary<string, Customer> Customers { get; }
+        [DataMember(Name = "Products")]
+        public List<IProduct> Products { get; private set; }
 
-        public ICollection<IOrder> OrderHistory { get; }
+        [DataMember(Name = "Locations")]
+        public List<ILocation> Locations { get; private set; }
+
+        [DataMember(Name = "Customers")]
+        public List<IUser> Customers { get; private set; }
+
+        [DataMember(Name = "OrderHistory")]
+        public List<IOrder> OrderHistory { get; private set; }
 
         public Store() {
+            _product_ID_seed = 1000;
             Products = new List<IProduct>();
             Locations = new List<ILocation>();
-            Customers = new Dictionary<string, Customer>();
+            Customers = new List<IUser>();
             OrderHistory = new List<IOrder>();
         }
 
-        public IOrder PlaceOrder(IOrder order) {
+        public IOrder PlaceOrder(Order order) {
             OrderHistory.Add(order);
             order.Customer.NewCart();
             return order;
@@ -33,12 +47,15 @@ namespace Project0.Library.Models {
                 }
             }
 
-            Locations.Add(new StandardStoreLocation(name, this));
+            Locations.Add(new Location(name, this));
             return true;
         }
         public Customer AddCustomer(string first_name, string last_name, string email) {
+            if (SearchCustomerByEmail(email) != null) {
+                throw new ArgumentException("Email already in use.");
+            }
             var customer = new Customer(first_name, last_name, email);
-            Customers.Add(email, customer);
+            Customers.Add(customer);
             return customer;
         }
 
@@ -53,17 +70,26 @@ namespace Project0.Library.Models {
         public ICollection<IUser> SearchCustomerByName(string s) {
             ICollection<IUser> users = new HashSet<IUser>();
             foreach (var customer in Customers) {
-                string customer_name = $"{customer.Value.FirstName} {customer.Value.LastName}";
+                string customer_name = $"{customer.FirstName} {customer.LastName}";
 
                 if (customer_name.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0) {
-                    users.Add(customer.Value);
+                    users.Add(customer);
                 }
             }
             return users;
         }
 
+        public IUser SearchCustomerByEmail(string s) {
+            foreach (var customer in Customers) {
+                if (customer.Email == s) {
+                    return customer;
+                }
+            }
+            return null;
+        }
+
         public ICollection<IOrder> SearchOrderHistoryByCustomer(IUser customer) {
-            ICollection<IOrder> orders = new HashSet<IOrder>();
+            ICollection<IOrder> orders = new List<IOrder>();
             foreach (var order in OrderHistory) {
                 if (order.Customer == customer) {
                     orders.Add(order);

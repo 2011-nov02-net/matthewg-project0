@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Project0.ConsoleApp": {
-      "commandName": "Project",
-      "commandLineArgs": "../../../store_data.json"
-    }
-  }
-}

@@ -9,4 +9,8 @@
     <ProjectReference Include="..\Project0.Library\Project0.Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
 </Project>
