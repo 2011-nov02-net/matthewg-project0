@@ -11,15 +11,6 @@ namespace Project0.ConsoleApp {
     public class DataPersistence {
 
         public static IStore Read(string filePath) {
-            /*string json;
-            try {
-                json = File.ReadAllText(filePath);
-            } catch (IOException) {
-                return new Store();
-            }
-            IStore data = JsonSerializer.Deserialize<Store>(json);
-            return data;*/
-
             Store data;
             FileStream fs = null;
             XmlDictionaryReader reader = null;
@@ -40,9 +31,6 @@ namespace Project0.ConsoleApp {
         }
 
         public static void Write(IStore data, string filePath) {
-            /*string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(filePath, json);*/
-
             DataContractSerializer ser = new DataContractSerializer(typeof(Store));
             using var writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true });
             ser.WriteObject(writer, data);
