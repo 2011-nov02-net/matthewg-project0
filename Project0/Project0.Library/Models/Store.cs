@@ -4,6 +4,25 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 
+// TODO:
+// - display all order history of a store location
+// - documentation with <summary> XML comments on all public types and members (optional: <params> and <return>)
+// - rejects orders with unreasonably high product quantities
+// - at least 10 test methods
+// - focus on unit testing business logic; testing the console app is very low priority
+// - do proper TDD for at least one class in the app
+// - (optional: order history can be sorted by earliest, latest, cheapest, most expensive)
+// - (optional: get a suggested order for a customer based on his order history)
+// - (optional: display some statistics based on order history)
+// - (optional: asynchronous network & file I / O)
+// - (optional: customer has a default store location to order from)
+// - (optional: some additional business rules, like special deals)
+// - (optional: for at least one product, more than one inventory item decrements when ordering that product)
+
+
+
+
+
 namespace Project0.Library.Models {
     [DataContract(Name = "Store", Namespace = "", IsReference = true)]
     [KnownType(typeof(Customer))]
@@ -13,6 +32,9 @@ namespace Project0.Library.Models {
     public class Store : IStore {
         [DataMember(Name = "_product_ID_seed")]
         private int _product_ID_seed;
+
+        [DataMember(Name = "_order_ID_seed")]
+        private int _order_ID_seed;
 
         [DataMember(Name = "Products")]
         public List<IProduct> Products { get; private set; }
@@ -28,15 +50,17 @@ namespace Project0.Library.Models {
 
         public Store() {
             _product_ID_seed = 1000;
+            _order_ID_seed = 0;
             Products = new List<IProduct>();
             Locations = new List<ILocation>();
             Customers = new List<IUser>();
             OrderHistory = new List<IOrder>();
         }
 
-        public IOrder PlaceOrder(Order order) {
+        public IOrder PlaceOrder(Customer customer, Location location) {
+            IOrder order = new Order(++_order_ID_seed, location, customer, DateTime.Now);
             OrderHistory.Add(order);
-            order.Customer.NewCart();
+            customer.NewCart();
             return order;
         }
 

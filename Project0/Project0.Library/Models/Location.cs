@@ -19,7 +19,7 @@ namespace Project0.Library.Models {
         }
 
         public IOrder PlaceOrder(Customer customer) {
-            return Store.PlaceOrder(new Order(this, customer, DateTime.Now));
+            return Store.PlaceOrder(customer, this);
         }
 
         public bool AddStock(IProduct product, int qty) {

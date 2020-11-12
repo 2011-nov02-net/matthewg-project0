@@ -10,7 +10,7 @@ namespace Project0.Library.Models {
         List<IUser> Customers { get; }
         List<IOrder> OrderHistory { get; }
 
-        IOrder PlaceOrder(Order order);
+        IOrder PlaceOrder(Customer customer, Location location);
         bool AddStandardLocation(string name);
         Customer AddCustomer(string first_name, string last_name, string email);
         void AddProduct(string name, double price);

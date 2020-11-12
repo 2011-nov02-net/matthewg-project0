@@ -23,6 +23,9 @@ namespace Project0.Library.Models {
         }
 
         public bool AddToCart(IProduct product, int qty) {
+            if (qty < 1) {
+                return false;
+            }
             if (CurrentLocation.Stock.ContainsKey(product) && CurrentLocation.Stock[product] >= qty) {
                 if (Cart.ContainsKey(product)) {
                     Cart[product] += qty;
