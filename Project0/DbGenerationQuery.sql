@@ -48,6 +48,7 @@ CREATE TABLE OrderContents (
 	OrderId INT NOT NULL FOREIGN KEY REFERENCES [Order] (Id),
 	ProductId INT NOT NULL FOREIGN KEY REFERENCES Product (Id),
 	Quantity INT NOT NULL CHECK (Quantity > 0),
+	Price MONEY NOT NULL,
 	PRIMARY KEY (OrderId, ProductId)
 )
 
@@ -76,7 +77,14 @@ INSERT INTO LocationInventory (LocationId, ProductId, Price, Stock) VALUES
 	((SELECT Id FROM Location WHERE Address='4550 Kester Mill Rd'), (SELECT Id FROM Product WHERE Name='Milk(1 gal)'), 4, 60),
 	((SELECT Id FROM Location WHERE Address='4550 Kester Mill Rd'), (SELECT Id FROM Product WHERE Name='Frozen Pizza'), 5, 20)
 INSERT INTO [Order] (CustomerId, LocationId, [Date]) VALUES
-	((SELECT Id FROM Customer WHERE Email='matthew.goodman@revature.net'), (SELECT Id FROM Location WHERE Address='2060 Village Link Rd'), SYSDATETIME())
-INSERT INTO OrderContents (OrderId, ProductId, Quantity) VALUES
-	((SELECT MAX([Id]) FROM [Order] WHERE CustomerId=(SELECT Id FROM Customer WHERE Email='matthew.goodman@revature.net')), (SELECT Id FROM Product WHERE Name='10 Chicken Nuggets'), 1)
+	((SELECT Id FROM Customer WHERE Email='matthew.goodman@revature.net'), (SELECT Id FROM Location WHERE Address='4550 Kester Mill Rd'), SYSDATETIME())
 
+DECLARE @maxid INT
+SELECT @maxid = MAX(Id) FROM [Order]
+DECLARE @prodid INT
+SELECT @prodid = Id FROM Product WHERE Name='Frozen Pizza'
+INSERT INTO OrderContents (OrderId, ProductId, Quantity, Price) VALUES
+	(@maxid,
+	@prodid,
+	1,
+	(SELECT Price FROM LocationInventory li WHERE li.ProductId=@prodid AND li.LocationId=(SELECT LocationId FROM [Order] WHERE Id=@maxid)))

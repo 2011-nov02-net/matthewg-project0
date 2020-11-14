@@ -7,6 +7,5 @@ namespace Project0.Library.Interfaces {
 
         int Id { get; }
         string DisplayName { get; }
-        double Price { get; }
     }
 }

@@ -8,6 +8,7 @@ namespace Project0.Library.Models {
     public class Order : IOrder {
         public int Id { get; set; }
         public Dictionary<Product, int> Products { get; set; }
+        public Dictionary<Product, decimal> Prices { get; set; }
         public Location Location { get; set; }
         public Customer Customer { get; set; }
         public DateTime Time { get; set; }

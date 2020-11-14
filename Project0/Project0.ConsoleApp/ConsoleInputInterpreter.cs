@@ -89,7 +89,7 @@ namespace Project0.ConsoleApp {
             return true;
         }
 
-        public bool? ValidProduct(string s, IStore store, out IProduct product) {
+        public bool? ValidProduct(string s, IStore store, out Product product) {
             if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
                 product = null;
                 return null;
@@ -132,7 +132,7 @@ namespace Project0.ConsoleApp {
             return store.AddStandardLocation(s);
         }
 
-        public bool RestockLocation(IStore store, ILocation location, IProduct product, int qty) {
+        public bool RestockLocation(IStore store, ILocation location, Product product, int qty) {
             return store.AddStock(location, product, qty);
         }
 
@@ -145,7 +145,7 @@ namespace Project0.ConsoleApp {
             return store.SearchCustomerByName(s);
         }
 
-        public KeyValuePair<IProduct, int>? ProductSelection(string s, Customer customer, out int exit_status) {
+        public KeyValuePair<Product, int>? ProductSelection(string s, Customer customer, out int exit_status) {
             if (s.Equals("leave", StringComparison.OrdinalIgnoreCase)) {
                 customer.EmptyCart();
                 exit_status = 1;
@@ -178,7 +178,7 @@ namespace Project0.ConsoleApp {
             return null;
         }
 
-        public bool QuantitySelection(string s, KeyValuePair<IProduct, int>? purchase_item, Customer customer) {
+        public bool QuantitySelection(string s, KeyValuePair<Product, int>? purchase_item, Customer customer) {
             int qty;
             try {
                 qty = int.Parse(s);

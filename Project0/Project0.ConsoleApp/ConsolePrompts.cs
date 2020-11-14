@@ -91,7 +91,7 @@ namespace Project0.ConsoleApp {
             string input;
 
             ILocation location;
-            IProduct product;
+            Product product;
             int qty;
             while (true) {
                 Console.WriteLine("Choose a location:");

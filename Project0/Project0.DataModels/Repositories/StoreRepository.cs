@@ -272,12 +272,30 @@ namespace Project0.DataModels.Repositories {
             return orders;
         }
 
+        /// <summary>
+        /// Retrieve Business-Model product object from database via product id
+        /// </summary>
+        /// <param name="id">Product id</param>
+        /// <returns>Business-Model product object</returns>
         public Library.Models.Product GetProductById(int id) {
-            throw new NotImplementedException();
+            var dbProduct = _dbContext.Products.First(p => p.Id == id);
+
+            return new Library.Models.Product() {
+                Id = dbProduct.Id,
+                DisplayName = dbProduct.Name
+            };
         }
 
+        /// <summary>
+        /// Retrieve all products in the database
+        /// </summary>
+        /// <returns>A group of Business-Model product objects</returns>
         public IEnumerable<Library.Models.Product> GetProducts() {
-            throw new NotImplementedException();
+            var dbProducts = _dbContext.Products.ToList();
+            return dbProducts.Select(p => new Library.Models.Product() {
+                Id = p.Id,
+                DisplayName = p.Name
+            }).ToList();
         }
 
         public void RemoveCustomer(Library.Models.Customer customer) {

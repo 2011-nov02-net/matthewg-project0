@@ -36,14 +36,14 @@ namespace Project0.Library.Models {
         public Location(string name, IStore store) {
             Name = name;
             Store = store;
-            Stock = new Dictionary<IProduct, int>();
+            Stock = new Dictionary<Product, int>();
         }
 
         public IOrder PlaceOrder(Customer customer) {
             return Store.PlaceOrder(customer, this);
         }
 
-        public bool AddStock(IProduct product, int qty) {
+        public bool AddStock(Product product, int qty) {
             if (Stock.ContainsKey(product)) {
                 Stock[product] += qty;
                 return true;

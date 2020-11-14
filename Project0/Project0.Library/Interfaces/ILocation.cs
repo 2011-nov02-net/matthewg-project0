@@ -11,6 +11,6 @@ namespace Project0.Library.Interfaces {
         Dictionary<Product, decimal> Prices { get; }
 
         IOrder PlaceOrder(Customer customer);
-        bool AddStock(IProduct product, int qty);
+        bool AddStock(Product product, int qty);
     }
 }

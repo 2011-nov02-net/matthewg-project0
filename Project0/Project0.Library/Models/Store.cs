@@ -35,7 +35,7 @@ namespace Project0.Library.Models {
         private int _product_ID_seed;
 
         [DataMember(Name = "Products")]
-        public List<IProduct> Products { get; private set; }
+        public List<Product> Products { get; private set; }
 
         [DataMember(Name = "Locations")]
         public List<ILocation> Locations { get; private set; }
@@ -48,7 +48,7 @@ namespace Project0.Library.Models {
 
         public Store() {
             _product_ID_seed = 1000;
-            Products = new List<IProduct>();
+            Products = new List<Product>();
             Locations = new List<ILocation>();
             Customers = new List<IUser>();
             OrderHistory = new List<IOrder>();
@@ -80,7 +80,7 @@ namespace Project0.Library.Models {
             return customer;
         }
 
-        public bool AddStock(ILocation location, IProduct product, int qty) {
+        public bool AddStock(ILocation location, Product product, int qty) {
             return location.AddStock(product, qty);
         }
 

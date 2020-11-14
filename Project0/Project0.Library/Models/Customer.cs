@@ -10,12 +10,12 @@ namespace Project0.Library.Models {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public Dictionary<IProduct, int> Cart { get; set; }
+        public Dictionary<Product, int> Cart { get; set; }
         public ILocation CurrentLocation { get; set; }
         public IOrder LastOrder { get; set; }
 
         public Customer() {
-            Cart = new Dictionary<IProduct, int>();
+            Cart = new Dictionary<Product, int>();
             CurrentLocation = null;
         }
 
@@ -23,11 +23,11 @@ namespace Project0.Library.Models {
             FirstName = first_name;
             LastName = last_name;
             Email = email;
-            Cart = new Dictionary<IProduct, int>();
+            Cart = new Dictionary<Product, int>();
             CurrentLocation = null;
         }
 
-        public bool AddToCart(IProduct product, int qty) {
+        public bool AddToCart(Product product, int qty) {
             if (qty < 1) {
                 return false;
             }
@@ -43,7 +43,7 @@ namespace Project0.Library.Models {
             return false;
         }
 
-        public bool RemoveFromCart(IProduct product, int qty) {
+        public bool RemoveFromCart(Product product, int qty) {
             if (Cart.ContainsKey(product)) {
                 if (Cart[product] > qty) {
                     Cart[product] -= qty;
@@ -68,7 +68,7 @@ namespace Project0.Library.Models {
         }
 
         public void NewCart() {
-            Cart = new Dictionary<IProduct, int>();
+            Cart = new Dictionary<Product, int>();
         }
 
         public void LeaveStore() {
