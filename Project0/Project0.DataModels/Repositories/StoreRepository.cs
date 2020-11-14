@@ -108,29 +108,14 @@ namespace Project0.DataModels.Repositories {
         /// <param name="id">Customer id</param>
         /// <returns>Business-Model Customer object</returns>
         public Library.Models.Customer GetCustomerById(int id) {
-            var dbCustomer = _dbContext.Customers
-                .Include(c => c.Orders)
-                    .ThenInclude(o => o.OrderContents)
-                
-                .First(c => c.Id == id);
+            var dbCustomer = _dbContext.Customers.First(c => c.Id == id);
 
-            var customer = new Library.Models.Customer() {
+            return new Library.Models.Customer() {
                 Id = dbCustomer.Id,
                 FirstName = dbCustomer.FirstName,
                 LastName = dbCustomer.LastName,
                 Email = dbCustomer.Email
             };
-
-            foreach (Order o in dbCustomer.Orders) {
-                Dictionary<Library.Models.Product, int> products = new Dictionary<Library.Models.Product, int>();
-                foreach (OrderContent oc in o.OrderContents) {
-                    Library.Models.Product product = new Library.Models.Product() { Id = oc.ProductId, DisplayName = oc.Product.Name };
-                    products.Add(product, oc.Quantity);
-                }
-                Library.Models.Location location = new Library.Models.Location(o.Location.Name, o.Location.Address, o.Location.City, o.Location.State, o.Location.Country, o.Location.PostalCode, o.Location.Phone) { Id = o.LocationId };
-                customer.Orders.Add(new Library.Models.Order() { Id = o.Id, Customer = customer, Products = products, Location = location, Time = o.Date});
-            }
-            return customer;
         }
 
         /// <summary>
@@ -139,15 +124,26 @@ namespace Project0.DataModels.Repositories {
         /// <returns>A group of Business-Model customer objects</returns>
         public IEnumerable<Library.Models.Customer> GetCustomers() {
             var dbCustomers = _dbContext.Customers.ToList();
-            List<Library.Models.Customer> customers = new List<Library.Models.Customer>();
-            foreach (var customer in dbCustomers) {
-                customers.Add(GetCustomerById(customer.Id));
-            }
-            return customers;
+            return dbCustomers.Select(c => new Library.Models.Customer() {
+                Id = c.Id,
+                FirstName = c.FirstName,
+                LastName = c.LastName,
+                Email = c.Email
+            }).ToList();
         }
 
         public Library.Models.Location GetLocationById(int id) {
-            throw new NotImplementedException();
+            var dbLocation = _dbContext.Locations.First(l => l.Id == id);
+
+            return new Library.Models.Location(
+                dbLocation.Name,
+                dbLocation.Address,
+                dbLocation.City,
+                dbLocation.State,
+                dbLocation.Country,
+                dbLocation.PostalCode,
+                dbLocation.Phone
+                ) { Id = dbLocation.Id };
         }
 
         /// <summary>
@@ -156,9 +152,7 @@ namespace Project0.DataModels.Repositories {
         /// <returns>A group of Business-Model location objects</returns>
         public IEnumerable<Library.Models.Location> GetLocations() {
             var dbLocations = _dbContext.Locations.ToList();
-            var locations = dbLocations.Select(l => new Library.Models.Location(l.Name, l.Address, l.City, l.State, l.Country, l.PostalCode, l.Phone)).ToList();
-
-            return locations;
+            return dbLocations.Select(l => new Library.Models.Location(l.Name, l.Address, l.City, l.State, l.Country, l.PostalCode, l.Phone)).ToList();
         }
 
         public Library.Models.Order GetOrderById(int id) {

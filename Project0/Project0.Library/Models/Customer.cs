@@ -13,7 +13,7 @@ namespace Project0.Library.Models {
         public Dictionary<IProduct, int> Cart { get; set; }
         public ILocation CurrentLocation { get; set; }
         public IOrder LastOrder { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        // public ICollection<Order> Orders { get; set; }
 
         public Customer() {
             Cart = new Dictionary<IProduct, int>();
