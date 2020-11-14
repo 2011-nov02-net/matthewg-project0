@@ -34,9 +34,6 @@ namespace Project0.Library.Models {
         [DataMember(Name = "_product_ID_seed")]
         private int _product_ID_seed;
 
-        [DataMember(Name = "_order_ID_seed")]
-        private int _order_ID_seed;
-
         [DataMember(Name = "Products")]
         public List<IProduct> Products { get; private set; }
 
@@ -51,7 +48,6 @@ namespace Project0.Library.Models {
 
         public Store() {
             _product_ID_seed = 1000;
-            _order_ID_seed = 0;
             Products = new List<IProduct>();
             Locations = new List<ILocation>();
             Customers = new List<IUser>();
@@ -59,7 +55,7 @@ namespace Project0.Library.Models {
         }
 
         public IOrder PlaceOrder(Customer customer, Location location) {
-            IOrder order = new Order(++_order_ID_seed, location, customer, DateTime.Now);
+            IOrder order = new Order(location, customer, DateTime.Now);
             OrderHistory.Add(order);
             customer.NewCart();
             return order;

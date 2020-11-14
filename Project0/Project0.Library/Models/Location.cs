@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Project0.Library.Models {
     public class Location : ILocation {
-        
+        public int Id { get; set; }
         public IStore Store { get; set; }
         public string Name { get; set; }
         public string Address { get; }
@@ -17,7 +17,9 @@ namespace Project0.Library.Models {
         public string Phone { get; set; }
         public Dictionary<IProduct, int> Stock { get; set; }
 
-        public Location() { }
+        public Location() {
+            Stock = new Dictionary<IProduct, int>();
+        }
 
         public Location(string name, string address, string city, string state, string country, string zip, string phone) {
             Name = name;
@@ -27,6 +29,7 @@ namespace Project0.Library.Models {
             Country = country;
             Zip = zip;
             Phone = phone;
+            Stock = new Dictionary<IProduct, int>();
         }
 
         public Location(string name, IStore store) {

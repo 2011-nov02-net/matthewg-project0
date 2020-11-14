@@ -9,6 +9,7 @@ namespace Project0.DataModels.Entities
     {
         public Location()
         {
+            LocationInventories = new HashSet<LocationInventory>();
             Orders = new HashSet<Order>();
         }
 
@@ -21,6 +22,7 @@ namespace Project0.DataModels.Entities
         public string PostalCode { get; set; }
         public string Phone { get; set; }
 
+        public virtual ICollection<LocationInventory> LocationInventories { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

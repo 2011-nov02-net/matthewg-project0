@@ -31,7 +31,8 @@ CREATE TABLE LocationInventory (
 	LocationId INT NOT NULL FOREIGN KEY REFERENCES Location (Id),
 	ProductId INT NOT NULL FOREIGN KEY REFERENCES Product (Id),
 	Price MONEY NOT NULL CHECK (Price > 0),
-	Stock INT NOT NULL CHECK (Stock >= 0)
+	Stock INT NOT NULL CHECK (Stock >= 0),
+	PRIMARY KEY (LocationId, ProductId)
 )
 
 DROP TABLE IF EXISTS [Order]
@@ -46,7 +47,8 @@ DROP TABLE IF EXISTS OrderContents
 CREATE TABLE OrderContents (
 	OrderId INT NOT NULL FOREIGN KEY REFERENCES [Order] (Id),
 	ProductId INT NOT NULL FOREIGN KEY REFERENCES Product (Id),
-	Quantity INT NOT NULL CHECK (Quantity > 0)
+	Quantity INT NOT NULL CHECK (Quantity > 0),
+	PRIMARY KEY (OrderId, ProductId)
 )
 
 -- Generate Dummy Data

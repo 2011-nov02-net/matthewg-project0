@@ -6,8 +6,8 @@ using System.Text;
 namespace Project0.Library.Interfaces {
     public interface IOrder {
 
-        Dictionary<IProduct, int> Products { get; }
-        ILocation Location { get; }
+        Dictionary<Product, int> Products { get; }
+        Location Location { get; }
         Customer Customer { get; }
         DateTime Time { get; }
     }

@@ -26,6 +26,7 @@ namespace Project0.Library.Interfaces {
         void AddProduct(Product product);
         void UpdateProduct(Product product);
         void RemoveProduct(Product product);
+        void StockLocation(Location location, Product product, int qty);
         void Save();
     }
 }
