@@ -1,11 +1,5 @@
 -- Generate Database for Project 0
 
-DROP TABLE IF EXISTS Store
-CREATE TABLE Store (
-	Id INT PRIMARY KEY IDENTITY,
-	Name NVARCHAR(99)
-)
-
 DROP TABLE IF EXISTS Location
 CREATE TABLE Location (
 	Id INT PRIMARY KEY IDENTITY,
@@ -16,7 +10,6 @@ CREATE TABLE Location (
 	Country NVARCHAR(99) NOT NULL,
 	PostalCode NVARCHAR(99),
 	Phone NVARCHAR(99),
-	StoreId INT NOT NULL FOREIGN KEY REFERENCES Store (Id)
 )
 
 DROP TABLE IF EXISTS Customer
@@ -58,12 +51,11 @@ CREATE TABLE OrderContents (
 
 -- Generate Dummy Data
 
-INSERT INTO Store (Name) VALUES ('Walmart'), ('McDonald''s');
-INSERT INTO Location (Name, Address, City, State, Country, PostalCode, Phone, StoreId) VALUES
-	('Walmart Neighborhood Market', '5175 Brookberry Park Ave', 'Winston-Salem', 'NC', 'United States', '27104', '(336)245-3007', (SELECT Id FROM Store WHERE Name='Walmart')),
-	('Walmart Supercenter', '4550 Kester Mill Rd', 'Winston-Salem', 'NC', 'United States', '27103', '(336) 760-9868', (SELECT Id FROM Store WHERE Name='Walmart')),
-	('McDonald''s', '2060 Village Link Rd', 'Winston-Salem', 'NC', 'United States', '27106', '(336)922-1030', (SELECT Id FROM Store WHERE Name='McDonald''s')),
-	('McDonald''s', '3401 Robinhood Rd', 'Winston-Salem', 'NC', 'United States', '27106', '(336)774-1625', (SELECT Id FROM Store WHERE Name='McDonald''s'));
+INSERT INTO Location (Name, Address, City, State, Country, PostalCode, Phone) VALUES
+	('Walmart Neighborhood Market', '5175 Brookberry Park Ave', 'Winston-Salem', 'NC', 'United States', '27104', '(336)245-3007'),
+	('Walmart Supercenter', '4550 Kester Mill Rd', 'Winston-Salem', 'NC', 'United States', '27103', '(336) 760-9868'),
+	('McDonald''s', '2060 Village Link Rd', 'Winston-Salem', 'NC', 'United States', '27106', '(336)922-1030'),
+	('McDonald''s', '3401 Robinhood Rd', 'Winston-Salem', 'NC', 'United States', '27106', '(336)774-1625');
 INSERT INTO Customer (FirstName, LastName, Email) VALUES
 	('Matt', 'Goodman', 'matthew.goodman@revature.net'),
 	('Nick', 'Escalona', 'nick.escalona@revature.net')

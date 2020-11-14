@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Project0.Library.Models {
+namespace Project0.Library.Interfaces {
     public interface IProduct {
 
         int Id { get; }
