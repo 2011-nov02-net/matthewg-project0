@@ -12,6 +12,7 @@ namespace Project0.Library.Interfaces {
         IEnumerable<Product> GetProducts();
         Location GetLocationById(int id);
         Customer GetCustomerById(int id);
+        Customer GetCustomerByEmail(string s);
         Order GetOrderById(int id);
         Product GetProductById(int id);
         void AddLocation(Location location);
@@ -27,6 +28,8 @@ namespace Project0.Library.Interfaces {
         void UpdateProduct(Product product);
         void RemoveProduct(Product product);
         void UpdateLocationStock(Location location, Product product, int qty);
+        IEnumerable<Order> GetCustomerOrders(Customer customer);
+        IEnumerable<Order> GetLocationOrders(Location location);
         void Save();
     }
 }

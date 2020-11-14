@@ -119,6 +119,22 @@ namespace Project0.DataModels.Repositories {
         }
 
         /// <summary>
+        /// Retrieve Business-Model Customer object from database via customer email address
+        /// </summary>
+        /// <param name="id">Customer email</param>
+        /// <returns>Business-Model customer object</returns>
+        public Library.Models.Customer GetCustomerByEmail(string s) {
+            var dbCustomer = _dbContext.Customers.First(c => c.Email == s);
+
+            return new Library.Models.Customer() {
+                Id = dbCustomer.Id,
+                FirstName = dbCustomer.FirstName,
+                LastName = dbCustomer.LastName,
+                Email = dbCustomer.Email
+            };
+        }
+
+        /// <summary>
         /// Retrieve all customers in the database
         /// </summary>
         /// <returns>A group of Business-Model customer objects</returns>
@@ -175,12 +191,85 @@ namespace Project0.DataModels.Repositories {
             return locations;
         }
 
+        /// <summary>
+        /// Retrieve Business-Model order object from database via order id
+        /// </summary>
+        /// <param name="id">Order id</param>
+        /// <returns>Business-Model order object</returns>
         public Library.Models.Order GetOrderById(int id) {
-            throw new NotImplementedException();
+            var dbOrder = _dbContext.Orders
+                .Include(o => o.Location)
+                .Include(o => o.Customer)
+                .Include(o => o.OrderContents)
+                    .ThenInclude(oc => oc.Product)
+                .First(o => o.Id == id);
+
+            var location = new Library.Models.Location(
+                dbOrder.Location.Name,
+                dbOrder.Location.Address,
+                dbOrder.Location.City,
+                dbOrder.Location.State,
+                dbOrder.Location.Country,
+                dbOrder.Location.PostalCode,
+                dbOrder.Location.Phone
+                ) { Id = dbOrder.LocationId };
+            var customer = new Library.Models.Customer() {
+                Id = dbOrder.CustomerId,
+                FirstName = dbOrder.Customer.FirstName,
+                LastName = dbOrder.Customer.LastName,
+                Email = dbOrder.Customer.Email
+            };
+
+            Dictionary<Library.Models.Product, int> products = new Dictionary<Library.Models.Product, int>();
+            foreach (OrderContent oc in dbOrder.OrderContents) {
+                Library.Models.Product product = new Library.Models.Product() { Id = oc.ProductId, DisplayName = oc.Product.Name };
+                products.Add(product, oc.Quantity);
+            }
+
+            return new Library.Models.Order() { Id = dbOrder.Id, Products = products, Customer = customer, Location = location, Time = dbOrder.Date };
+        }  
+
+        /// <summary>
+        /// Retrieve all orders in the database
+        /// </summary>
+        /// <returns>A group of Business-Model order objects</returns>
+        public IEnumerable<Library.Models.Order> GetOrders() {
+            var dbOrders = _dbContext.Orders.ToList();
+            List<Library.Models.Order> orders = new List<Library.Models.Order>();
+            foreach (var order in dbOrders) {
+                orders.Add(GetOrderById(order.Id));
+            }
+            return orders;
         }
 
-        public IEnumerable<Library.Models.Order> GetOrders() {
-            throw new NotImplementedException();
+        /// <summary>
+        /// Retrieve all orders in the database submitted by a particular customer
+        /// </summary>
+        /// <returns>A group of Business-Model order objects</returns>
+        public IEnumerable<Library.Models.Order> GetCustomerOrders(Library.Models.Customer customer) {
+            var dbOrders = _dbContext.Orders.Include(o => o.Customer).ToList();
+            List<Library.Models.Order> orders = new List<Library.Models.Order>();
+            foreach (var order in dbOrders) {
+                if (order.Customer.Id == customer.Id) {
+                    orders.Add(GetOrderById(order.Id));
+                }
+            }
+            return orders;
+        }
+
+        /// <summary>
+        /// Retrieve all orders in the database submitted from a particular location
+        /// </summary>
+        /// <returns>A group of Business-Model order objects</returns>
+        public IEnumerable<Library.Models.Order> GetLocationOrders(Library.Models.Location location) {
+            var dbOrders = _dbContext.Orders.Include(o => o.Location).ToList();
+            List<Library.Models.Order> orders = new List<Library.Models.Order>();
+            foreach (var order in dbOrders) {
+                if (order.Location.Id == location.Id) {
+                    orders.Add(GetOrderById(order.Id));
+                }
+            }
+            return orders;
         }
 
         public Library.Models.Product GetProductById(int id) {
