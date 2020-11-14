@@ -15,10 +15,11 @@ namespace Project0.Library.Models {
         public string Country { get; }
         public string Zip { get; }
         public string Phone { get; set; }
-        public Dictionary<IProduct, int> Stock { get; set; }
+        public Dictionary<Product, int> Stock { get; set; }
+        public Dictionary<Product, decimal> Prices { get; set; }
 
         public Location() {
-            Stock = new Dictionary<IProduct, int>();
+            Stock = new Dictionary<Product, int>();
         }
 
         public Location(string name, string address, string city, string state, string country, string zip, string phone) {
@@ -29,7 +30,7 @@ namespace Project0.Library.Models {
             Country = country;
             Zip = zip;
             Phone = phone;
-            Stock = new Dictionary<IProduct, int>();
+            Stock = new Dictionary<Product, int>();
         }
 
         public Location(string name, IStore store) {

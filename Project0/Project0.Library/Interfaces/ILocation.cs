@@ -7,7 +7,8 @@ namespace Project0.Library.Interfaces {
     public interface ILocation {
 
         string Name { get; }
-        Dictionary<IProduct, int> Stock { get; }
+        Dictionary<Product, int> Stock { get; }
+        Dictionary<Product, decimal> Prices { get; }
 
         IOrder PlaceOrder(Customer customer);
         bool AddStock(IProduct product, int qty);

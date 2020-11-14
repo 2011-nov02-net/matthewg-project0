@@ -106,7 +106,7 @@ namespace Project0.DataModels.Repositories {
         /// Retrieve Business-Model Customer object from database via customer id
         /// </summary>
         /// <param name="id">Customer id</param>
-        /// <returns>Business-Model Customer object</returns>
+        /// <returns>Business-Model customer object</returns>
         public Library.Models.Customer GetCustomerById(int id) {
             var dbCustomer = _dbContext.Customers.First(c => c.Id == id);
 
@@ -132,8 +132,24 @@ namespace Project0.DataModels.Repositories {
             }).ToList();
         }
 
+        /// <summary>
+        /// Retrieve Business-Model location object from database via location id
+        /// </summary>
+        /// <param name="id">Location id</param>
+        /// <returns>Business-Model location object</returns>
         public Library.Models.Location GetLocationById(int id) {
-            var dbLocation = _dbContext.Locations.First(l => l.Id == id);
+            var dbLocation = _dbContext.Locations
+                .Include(l => l.LocationInventories)
+                    .ThenInclude(li => li.Product)
+                .First(l => l.Id == id);
+
+            Dictionary<Library.Models.Product, int> stock = new Dictionary<Library.Models.Product, int>();
+            Dictionary<Library.Models.Product, decimal> prices = new Dictionary<Library.Models.Product, decimal>();
+            foreach (LocationInventory li in dbLocation.LocationInventories) {
+                Library.Models.Product product = new Library.Models.Product() { Id = li.ProductId, DisplayName = li.Product.Name };
+                stock.Add(product, li.Stock);
+                prices.Add(product, li.Price);
+            }
 
             return new Library.Models.Location(
                 dbLocation.Name,
@@ -143,7 +159,7 @@ namespace Project0.DataModels.Repositories {
                 dbLocation.Country,
                 dbLocation.PostalCode,
                 dbLocation.Phone
-                ) { Id = dbLocation.Id };
+                ) { Id = dbLocation.Id, Stock = stock, Prices = prices };
         }
 
         /// <summary>
@@ -152,7 +168,11 @@ namespace Project0.DataModels.Repositories {
         /// <returns>A group of Business-Model location objects</returns>
         public IEnumerable<Library.Models.Location> GetLocations() {
             var dbLocations = _dbContext.Locations.ToList();
-            return dbLocations.Select(l => new Library.Models.Location(l.Name, l.Address, l.City, l.State, l.Country, l.PostalCode, l.Phone)).ToList();
+            List<Library.Models.Location> locations = new List<Library.Models.Location>();
+            foreach (var location in dbLocations) {
+                locations.Add(GetLocationById(location.Id));
+            }
+            return locations;
         }
 
         public Library.Models.Order GetOrderById(int id) {
@@ -193,7 +213,7 @@ namespace Project0.DataModels.Repositories {
             _dbContext.SaveChanges();
         }
 
-        public void StockLocation(Library.Models.Location location, Library.Models.Product product, int qty) {
+        public void UpdateLocationStock(Library.Models.Location location, Library.Models.Product product, int qty) {
             throw new NotImplementedException();
         }
 
