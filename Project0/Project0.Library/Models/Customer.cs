@@ -11,8 +11,7 @@ namespace Project0.Library.Models {
         public string LastName { get; set; }
         public string Email { get; set; }
         public Dictionary<Product, int> Cart { get; set; }
-        public ILocation CurrentLocation { get; set; }
-        public IOrder LastOrder { get; set; }
+        public Location CurrentLocation { get; set; }
 
         public Customer() {
             Cart = new Dictionary<Product, int>();
@@ -55,10 +54,6 @@ namespace Project0.Library.Models {
                 return true;
             }
             return false;
-        }
-
-        public IOrder PlaceOrder() {
-            return CurrentLocation.PlaceOrder(this);
         }
 
         public void EmptyCart() {

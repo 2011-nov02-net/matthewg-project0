@@ -5,7 +5,7 @@ using Project0.Library.Models;
 
 namespace Project0.Library.Interfaces {
     public interface IUserPrompts {
-        IStore Store { get; }
+        IStoreRepository Store { get; }
 
         void WelcomeMessage();
 
@@ -31,7 +31,7 @@ namespace Project0.Library.Interfaces {
 
         bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer);
 
-        void CheckoutPrompt(IOrder order);
+        void CheckoutPrompt(Customer customer);
 
         bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer);
     }

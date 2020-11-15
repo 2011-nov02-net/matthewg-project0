@@ -30,7 +30,7 @@ namespace Project0.Library.Models {
     [KnownType(typeof(Location))]
     [KnownType(typeof(Order))]
     [KnownType(typeof(Product))]
-    public class Store : IStore {
+    public class Store {
         [DataMember(Name = "_product_ID_seed")]
         private int _product_ID_seed;
 
@@ -38,24 +38,24 @@ namespace Project0.Library.Models {
         public List<Product> Products { get; private set; }
 
         [DataMember(Name = "Locations")]
-        public List<ILocation> Locations { get; private set; }
+        public List<Location> Locations { get; private set; }
 
         [DataMember(Name = "Customers")]
-        public List<IUser> Customers { get; private set; }
+        public List<Customer> Customers { get; private set; }
 
         [DataMember(Name = "OrderHistory")]
-        public List<IOrder> OrderHistory { get; private set; }
+        public List<Order> OrderHistory { get; private set; }
 
         public Store() {
             _product_ID_seed = 1000;
             Products = new List<Product>();
-            Locations = new List<ILocation>();
-            Customers = new List<IUser>();
-            OrderHistory = new List<IOrder>();
+            Locations = new List<Location>();
+            Customers = new List<Customer>();
+            OrderHistory = new List<Order>();
         }
 
-        public IOrder PlaceOrder(Customer customer, Location location) {
-            IOrder order = new Order(location, customer, DateTime.Now);
+        public Order PlaceOrder(Customer customer, Location location) {
+            Order order = new Order(location, customer, DateTime.Now);
             OrderHistory.Add(order);
             customer.NewCart();
             return order;
@@ -68,7 +68,7 @@ namespace Project0.Library.Models {
                 }
             }
 
-            Locations.Add(new Location(name, this));
+            Locations.Add(new Location());
             return true;
         }
         public Customer AddCustomer(string first_name, string last_name, string email) {
@@ -80,16 +80,16 @@ namespace Project0.Library.Models {
             return customer;
         }
 
-        public bool AddStock(ILocation location, Product product, int qty) {
+        public bool AddStock(Location location, Product product, int qty) {
             return location.AddStock(product, qty);
         }
 
-        public void AddProduct(string name, double price) {
-            Products.Add(new Product(++_product_ID_seed, name, price));
+        public void AddProduct(string name) {
+            Products.Add(new Product(name));
         }
 
-        public ICollection<IUser> SearchCustomerByName(string s) {
-            ICollection<IUser> users = new HashSet<IUser>();
+        public ICollection<Customer> SearchCustomerByName(string s) {
+            ICollection<Customer> users = new HashSet<Customer>();
             foreach (var customer in Customers) {
                 string customer_name = $"{customer.FirstName} {customer.LastName}";
 
@@ -100,7 +100,7 @@ namespace Project0.Library.Models {
             return users;
         }
 
-        public IUser SearchCustomerByEmail(string s) {
+        public Customer SearchCustomerByEmail(string s) {
             foreach (var customer in Customers) {
                 if (customer.Email == s) {
                     return customer;
@@ -109,8 +109,8 @@ namespace Project0.Library.Models {
             return null;
         }
 
-        public ICollection<IOrder> SearchOrderHistoryByCustomer(IUser customer) {
-            ICollection<IOrder> orders = new List<IOrder>();
+        public ICollection<Order> SearchOrderHistoryByCustomer(Customer customer) {
+            ICollection<Order> orders = new List<Order>();
             foreach (var order in OrderHistory) {
                 if (order.Customer == customer) {
                     orders.Add(order);

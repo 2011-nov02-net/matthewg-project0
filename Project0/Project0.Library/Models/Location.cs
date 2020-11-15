@@ -5,9 +5,8 @@ using System.Runtime.Serialization;
 using System.Text;
 
 namespace Project0.Library.Models {
-    public class Location : ILocation {
+    public class Location {
         public int Id { get; set; }
-        public IStore Store { get; set; }
         public string Name { get; set; }
         public string Address { get; }
         public string City { get; }
@@ -31,16 +30,6 @@ namespace Project0.Library.Models {
             Zip = zip;
             Phone = phone;
             Stock = new Dictionary<Product, int>();
-        }
-
-        public Location(string name, IStore store) {
-            Name = name;
-            Store = store;
-            Stock = new Dictionary<Product, int>();
-        }
-
-        public IOrder PlaceOrder(Customer customer) {
-            return Store.PlaceOrder(customer, this);
         }
 
         public bool AddStock(Product product, int qty) {

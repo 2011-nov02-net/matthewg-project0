@@ -79,7 +79,8 @@ namespace Project0.DataModels.Repositories {
                 var dbOrderContent = new OrderContent() {
                     Order = dbOrder,
                     Product = product,
-                    Quantity = item.Value
+                    Quantity = item.Value,
+                    Price = order.Location.Prices[item.Key]
                 };
 
                 _dbContext.OrderContents.Add(dbOrderContent);
@@ -149,6 +150,16 @@ namespace Project0.DataModels.Repositories {
         }
 
         /// <summary>
+        /// Retrieve all customers with a given name
+        /// </summary>
+        /// <param name="firstName">Customer's first name</param>
+        /// <param name="lastName">Customer's last name</param>
+        /// <returns>A collection of Business-Model customer objects</returns>
+        public ICollection<Library.Models.Customer> GetCustomersByName(string firstName, string lastName) {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Retrieve Business-Model location object from database via location id
         /// </summary>
         /// <param name="id">Location id</param>
@@ -181,8 +192,8 @@ namespace Project0.DataModels.Repositories {
         /// <summary>
         /// Retrieve all locations in the database
         /// </summary>
-        /// <returns>A group of Business-Model location objects</returns>
-        public IEnumerable<Library.Models.Location> GetLocations() {
+        /// <returns>A list of Business-Model location objects</returns>
+        public List<Library.Models.Location> GetLocations() {
             var dbLocations = _dbContext.Locations.ToList();
             List<Library.Models.Location> locations = new List<Library.Models.Location>();
             foreach (var location in dbLocations) {
@@ -221,20 +232,22 @@ namespace Project0.DataModels.Repositories {
             };
 
             Dictionary<Library.Models.Product, int> products = new Dictionary<Library.Models.Product, int>();
+            Dictionary<Library.Models.Product, decimal> prices = new Dictionary<Library.Models.Product, decimal>();
             foreach (OrderContent oc in dbOrder.OrderContents) {
                 Library.Models.Product product = new Library.Models.Product() { Id = oc.ProductId, DisplayName = oc.Product.Name };
                 products.Add(product, oc.Quantity);
+                prices.Add(product, oc.Price);
             }
 
-            return new Library.Models.Order() { Id = dbOrder.Id, Products = products, Customer = customer, Location = location, Time = dbOrder.Date };
+            return new Library.Models.Order() { Id = dbOrder.Id, Products = products, PricePaid = prices, Customer = customer, Location = location, Time = dbOrder.Date };
         }  
 
         /// <summary>
         /// Retrieve all orders in the database
         /// </summary>
         /// <returns>A group of Business-Model order objects</returns>
-        public IEnumerable<Library.Models.Order> GetOrders() {
-            var dbOrders = _dbContext.Orders.ToList();
+        public ICollection<Library.Models.Order> GetOrders() {
+            var dbOrders = _dbContext.Orders.OrderByDescending(o => o.Date).ToList();
             List<Library.Models.Order> orders = new List<Library.Models.Order>();
             foreach (var order in dbOrders) {
                 orders.Add(GetOrderById(order.Id));
@@ -245,9 +258,9 @@ namespace Project0.DataModels.Repositories {
         /// <summary>
         /// Retrieve all orders in the database submitted by a particular customer
         /// </summary>
-        /// <returns>A group of Business-Model order objects</returns>
-        public IEnumerable<Library.Models.Order> GetCustomerOrders(Library.Models.Customer customer) {
-            var dbOrders = _dbContext.Orders.Include(o => o.Customer).ToList();
+        /// <returns>A list of Business-Model order objects</returns>
+        public List<Library.Models.Order> GetCustomerOrders(Library.Models.Customer customer) {
+            var dbOrders = _dbContext.Orders.Include(o => o.Customer).Include(o => o.OrderContents).OrderByDescending(o => o.Date).ToList();
             List<Library.Models.Order> orders = new List<Library.Models.Order>();
             foreach (var order in dbOrders) {
                 if (order.Customer.Id == customer.Id) {
@@ -289,8 +302,8 @@ namespace Project0.DataModels.Repositories {
         /// <summary>
         /// Retrieve all products in the database
         /// </summary>
-        /// <returns>A group of Business-Model product objects</returns>
-        public IEnumerable<Library.Models.Product> GetProducts() {
+        /// <returns>A list of Business-Model product objects</returns>
+        public List<Library.Models.Product> GetProducts() {
             var dbProducts = _dbContext.Products.ToList();
             return dbProducts.Select(p => new Library.Models.Product() {
                 Id = p.Id,
@@ -320,12 +333,29 @@ namespace Project0.DataModels.Repositories {
             _dbContext.SaveChanges();
         }
 
-        public void UpdateLocationStock(Library.Models.Location location, Library.Models.Product product, int qty) {
-            throw new NotImplementedException();
+        /// <summary>
+        /// Update the amount of some product that a particular location has in stock
+        /// </summary>
+        /// <param name="location">Business-Model location object</param>
+        /// <param name="product">Business-Model product object</param>
+        /// <param name="qty">integer number of items to add</param>
+        public void UpdateLocationStock(Library.Models.Location location, Library.Models.Product product) {
+            var dbLocationInventory = _dbContext.LocationInventories.First(x => x.LocationId == location.Id && x.ProductId == product.Id);
+            dbLocationInventory.Stock = location.Stock[product];
         }
 
-        public void UpdateCustomer(Library.Models.Customer customer) {
-            throw new NotImplementedException();
+        /// <summary>
+        /// Update the details of a customer
+        /// </summary>
+        /// <param name="customer">Business-Model customer object</param>
+        /// <param name="firstName">new first name, remains unchanged if null</param>
+        /// <param name="lastName">new last name, remains unchanged if null</param>
+        /// <param name="email">new email address, remains unchanged if null</param>
+        public void UpdateCustomer(Library.Models.Customer customer, string firstName, string lastName, string email) {
+            var dbCustomer = _dbContext.Customers.First(c => c.Id == customer.Id);
+            dbCustomer.FirstName = firstName ?? dbCustomer.FirstName;
+            dbCustomer.LastName = lastName ?? dbCustomer.LastName;
+            dbCustomer.Email = email ?? dbCustomer.Email;
         }
 
         public void UpdateLocation(Library.Models.Location location) {

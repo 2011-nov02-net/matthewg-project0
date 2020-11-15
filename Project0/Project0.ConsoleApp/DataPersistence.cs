@@ -11,7 +11,7 @@ using Project0.Library.Interfaces;
 namespace Project0.ConsoleApp {
     public class DataPersistence {
 
-        public static IStore Read(string filePath) {
+        public static Store Read(string filePath) {
             Store data;
             FileStream fs = null;
             XmlDictionaryReader reader = null;
@@ -31,7 +31,7 @@ namespace Project0.ConsoleApp {
             return data;
         }
 
-        public static void Write(IStore data, string filePath) {
+        public static void Write(Store data, string filePath) {
             DataContractSerializer ser = new DataContractSerializer(typeof(Store));
             using var writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true });
             ser.WriteObject(writer, data);

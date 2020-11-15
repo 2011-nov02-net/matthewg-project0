@@ -66,7 +66,7 @@ namespace Project0.Library {
                 }
             }
 
-            _prompts.CheckoutPrompt(customer.LastOrder);
+            _prompts.CheckoutPrompt(customer);
             return false;
         }
     }

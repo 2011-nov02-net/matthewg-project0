@@ -25,17 +25,17 @@ namespace Project0.ConsoleApp {
             IStoreRepository storeRepository = new StoreRepository(context);
 
             /*string path = "../../../store_data.xml";
-            IStore store = DataPersistence.Read(path);
-            var prompts = new ConsolePrompts(store);
+            Store store = DataPersistence.Read(path);*/
+
+            var prompts = new ConsolePrompts(storeRepository);
             var interpreter = new ConsoleInputInterpreter(prompts);
             var user_interface = new StoreInterface(prompts, interpreter);
 
-            user_interface.Launch();*/
-            
+            user_interface.Launch();
         }
 
         static string GetConnectionString() {
-            string path = "../../../../../../../Project0-connection-string.json";
+            string path = "../../../../../../Project0-connection-string.json";
             string json;
             try {
                 json = File.ReadAllText(path);

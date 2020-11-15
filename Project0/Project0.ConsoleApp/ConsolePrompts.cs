@@ -8,9 +8,9 @@ using System.Text;
 namespace Project0.ConsoleApp {
     public class ConsolePrompts : IUserPrompts {
 
-        public IStore Store { get; }
+        public IStoreRepository Store { get; }
 
-        public ConsolePrompts(IStore store) {
+        public ConsolePrompts(IStoreRepository store) {
             Store = store;
         }
 
@@ -25,20 +25,17 @@ namespace Project0.ConsoleApp {
         }
 
         public IUser RegisterPrompt(IUserInputInterpreter interpreter) {
-            Console.WriteLine("Enter your first and last name separated by a space.");
+            Console.WriteLine("Enter your first name, last name, and email address - separated by whitespace, [cancel] to Exit.");
             string input = Console.ReadLine();
 
-            string[] name = interpreter.ParseName(input);
-            if (name == null) {
-                Console.WriteLine("Invalid name.");
+            string[] customer_details = interpreter.ParseNewCustomer(input);
+            if (customer_details == null) {
+                Console.WriteLine("Invalid input. Proper syntax: <FirstName> <LastName> <Email>");
                 return null;
             }
-
-            Console.WriteLine("Enter your email address.");
-            input = Console.ReadLine();
-            var new_customer = interpreter.RegisterCustomer(name, input, Store);
+            var new_customer = interpreter.RegisterCustomer(customer_details, Store);
             if (new_customer == null) {
-                Console.WriteLine("Invalid email address or address is already in use.");
+                Console.WriteLine("Email address is already in use.");
                 return null;
             }
             Console.WriteLine($"Welcome {new_customer.FirstName} {new_customer.LastName}.\n" +
@@ -51,9 +48,9 @@ namespace Project0.ConsoleApp {
         }
 
         public bool? StoreEntryPrompt(IUserInputInterpreter interpreter, Customer customer) {
-            Console.WriteLine("Please select the store location you are visiting.");
+            Console.WriteLine("Please select the store location you would like to order from.");
             int i = 0;
-            foreach (var loc in Store.Locations) {
+            foreach (var loc in Store.GetLocations()) {
                 Console.WriteLine($"[{i++}] {loc.Name}");
             }
             Console.WriteLine("[history] View order history");
@@ -77,6 +74,7 @@ namespace Project0.ConsoleApp {
         public bool NewStoreLocation(IUserInputInterpreter interpreter) {
             Console.WriteLine("Enter the name of the new location.");
             string input = Console.ReadLine();
+            // TODO: Prompts for location info
             bool success = interpreter.GenerateLocation(input, Store);
             if (success) {
                 Console.WriteLine($"Successfully created new store location: {input}.");
@@ -90,13 +88,13 @@ namespace Project0.ConsoleApp {
             int i;
             string input;
 
-            ILocation location;
+            Location location;
             Product product;
             int qty;
             while (true) {
                 Console.WriteLine("Choose a location:");
                 i = 0;
-                foreach (var loc in Store.Locations) {
+                foreach (var loc in Store.GetLocations()) {
                     Console.WriteLine($"[{i++}] {loc.Name}");
                 }
                 Console.WriteLine("[cancel] EXIT");
@@ -113,7 +111,7 @@ namespace Project0.ConsoleApp {
             while (true) {
                 Console.WriteLine("Choose a product:");
                 i = 0;
-                foreach (var pro in Store.Products) {
+                foreach (var pro in Store.GetProducts()) {
                     Console.WriteLine($"[{i++}] {pro.DisplayName}");
                 }
                 Console.WriteLine("[cancel] EXIT");
@@ -163,13 +161,13 @@ namespace Project0.ConsoleApp {
                     break;
                 }
             }
-            return interpreter.GenerateProduct(product_name, Store, price);
+            return interpreter.GenerateProduct(product_name, Store);
         }
 
         public bool UserLookupPrompt(IUserInputInterpreter interpreter) {
             Console.WriteLine("Enter a user's name.");
             string input = Console.ReadLine();
-            ICollection<IUser> users = interpreter.UserLookup(input, Store);
+            ICollection<Customer> users = interpreter.UserLookup(input, Store);
             foreach (var user in users) {
                 Console.WriteLine($"{user.LastName}, {user.FirstName} - {user.Email}");
             }
@@ -178,18 +176,18 @@ namespace Project0.ConsoleApp {
         }
 
         public bool PrintOrderHistory(Customer customer) {
-            ICollection<IOrder> orders;
+            ICollection<Order> orders;
             if (customer == null) {
-                orders = Store.OrderHistory;
+                orders = Store.GetOrders();
             } else {
-                orders = Store.SearchOrderHistoryByCustomer(customer);
+                orders = Store.GetCustomerOrders(customer);
             }
             Console.WriteLine();
             foreach (var order in orders) {
                 Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");
-                double total_price = 0;
+                decimal total_price = 0;
                 foreach (var item in order.Products) {
-                    double item_price = item.Key.Price * item.Value;
+                    decimal item_price = order.PricePaid[item.Key] * item.Value;
                     total_price += item_price;
                     Console.WriteLine($"{item.Key.DisplayName} x{item.Value} - {item_price:c}");
                 }
@@ -200,11 +198,14 @@ namespace Project0.ConsoleApp {
         }
 
         public bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer) {
-            Console.WriteLine($"\nSigned in as {customer.FirstName} {customer.LastName}, shopping at {customer.CurrentLocation.Name}.");
+            Location location = customer.CurrentLocation;
+            Console.WriteLine($"\nSigned in as {customer.FirstName} {customer.LastName}, shopping at {location.Name}.");
             Console.WriteLine("Select an item you would like to purchase. Enter [cart] to view/modify your cart, or [leave] to abandon your cart.");
             int i = 0;
-            foreach (var item in customer.CurrentLocation.Stock) {
-                Console.WriteLine($"[{i++}] {item.Key.DisplayName}, {item.Key.Price:c} - {item.Value} in stock");
+            foreach (Product item in location.Stock.Keys) {
+                int stock = location.Stock[item];
+                decimal price = location.Prices[item];
+                Console.WriteLine($"[{i++}] {item.DisplayName}, {price:c} - {stock} in stock");
             }
             Console.WriteLine();
             string input = Console.ReadLine();
@@ -223,16 +224,20 @@ namespace Project0.ConsoleApp {
             return interpreter.QuantitySelection(input, store_item, customer);
         }
 
-        public void CheckoutPrompt(IOrder order) {
+        public void CheckoutPrompt(Customer customer) {
+            Order order = Store.GetCustomerOrders(customer)[0];
             Console.WriteLine("\nThank you for your purchase. Order details below:\n");
             Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");
-            double total_price = 0;
+            decimal total_price = 0;
             foreach (var item in order.Products) {
-                double item_price = item.Key.Price * item.Value;
+                Store.UpdateLocationStock(order.Location, item.Key);
+                decimal item_price = order.PricePaid[item.Key] * item.Value;
                 total_price += item_price;
                 Console.WriteLine($"{item.Key.DisplayName} x{item.Value} - {item_price:c}");
             }
+            Store.Save();
             Console.WriteLine($"Total: {total_price:c}");
+            
         }
 
         public bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer) {
@@ -242,7 +247,7 @@ namespace Project0.ConsoleApp {
                 Console.WriteLine($"{item.Key.DisplayName} x{item.Value}");
             }
             string input = Console.ReadLine();
-            return interpreter.CartCommands(input, customer);
+            return interpreter.CartCommands(input, customer, Store);
         }
     }
 }
