@@ -1,8 +1,5 @@
 ﻿using Project0.Library.Interfaces;
 using Project0.Library.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Project0.Library {
     public class StoreInterface {
@@ -65,8 +62,6 @@ namespace Project0.Library {
                     return true;
                 }
             }
-
-            _prompts.CheckoutPrompt(customer);
             return false;
         }
     }

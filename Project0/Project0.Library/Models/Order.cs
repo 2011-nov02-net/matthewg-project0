@@ -1,8 +1,5 @@
-﻿using Project0.Library.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
 
 namespace Project0.Library.Models {
     public class Order {
@@ -13,13 +10,19 @@ namespace Project0.Library.Models {
         public Customer Customer { get; set; }
         public DateTime Time { get; set; }
 
-        public Order() { }
+        public Order() {
+            Products = new Dictionary<Product, int>();
+        }
 
         public Order(Location location, Customer customer, DateTime time) {
             Products = customer.Cart;
             Location = location;
             Customer = customer;
             Time = time;
+            PricePaid = new Dictionary<Product, decimal>();
+            foreach (Product p in Products.Keys) {
+                PricePaid[p] = location.Prices[p];
+            }
         }
     }
 }

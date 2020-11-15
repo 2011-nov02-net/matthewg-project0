@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Project0.Library.Models;
 using System.IO;
-using System.Text.Json;
 using System.Runtime.Serialization;
 using System.Xml;
-using Project0.Library.Interfaces;
 
 namespace Project0.ConsoleApp {
     public class DataPersistence {

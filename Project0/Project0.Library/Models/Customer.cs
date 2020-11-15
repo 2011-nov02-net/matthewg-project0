@@ -1,8 +1,5 @@
 ﻿using Project0.Library.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
 
 namespace Project0.Library.Models {
     public class Customer : IUser {

@@ -4,7 +4,6 @@ using Project0.Library.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Project0.DataModels.Repositories {
     public class StoreRepository : IStoreRepository {
@@ -340,8 +339,21 @@ namespace Project0.DataModels.Repositories {
         /// <param name="product">Business-Model product object</param>
         /// <param name="qty">integer number of items to add</param>
         public void UpdateLocationStock(Library.Models.Location location, Library.Models.Product product) {
-            var dbLocationInventory = _dbContext.LocationInventories.First(x => x.LocationId == location.Id && x.ProductId == product.Id);
-            dbLocationInventory.Stock = location.Stock[product];
+            LocationInventory dbLocationInventory;
+            try {
+                dbLocationInventory = _dbContext.LocationInventories.First(x => x.LocationId == location.Id && x.ProductId == product.Id);
+                dbLocationInventory.Stock = location.Stock[product];
+            } catch (InvalidOperationException) {
+                var dbLocation = _dbContext.Locations.First(l => l.Id == location.Id);
+                var dbProduct = _dbContext.Products.First(p => p.Id == product.Id);
+                dbLocationInventory = new LocationInventory() {
+                    Location = dbLocation,
+                    Product = dbProduct,
+                    Stock = location.Stock[product],
+                    Price = location.Prices[product]
+                };
+                _dbContext.LocationInventories.Add(dbLocationInventory);
+            }
         }
 
         /// <summary>

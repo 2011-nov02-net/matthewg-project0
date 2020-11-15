@@ -1,9 +1,7 @@
-﻿using Project0.Library;
-using Project0.Library.Interfaces;
+﻿using Project0.Library.Interfaces;
 using Project0.Library.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Project0.ConsoleApp {
     public class ConsolePrompts : IUserPrompts {
@@ -141,25 +139,28 @@ namespace Project0.ConsoleApp {
             return interpreter.RestockLocation(Store, location, product, qty);
         }
 
-        public bool NewProductPrompt(IUserInputInterpreter interpreter) {
-            Console.WriteLine("Enter product name. [cancel] to exit.");
-            string product_name = Console.ReadLine();
-            double price;
-            if (product_name.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                return true;
-            }
+        public decimal? ProductPricePrompt(IUserInputInterpreter interpreter) {
+            decimal? price;
             while (true) {
                 Console.WriteLine("Enter price. [cancel] to exit.");
                 string price_input = Console.ReadLine();
-                if (price_input.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                    return true;
+                price = interpreter.ParsePrice(price_input);
+                if (price == null) {
+                    return null;
                 }
-                try {
-                    price = double.Parse(price_input);
-                } catch (Exception) { continue; }
                 if (price >= 0) {
                     break;
                 }
+                Console.WriteLine("Price must be greater than 0.");
+            }
+            return price;
+        }
+
+        public bool NewProductPrompt(IUserInputInterpreter interpreter) {
+            Console.WriteLine("Enter product name. [cancel] to exit.");
+            string product_name = Console.ReadLine();
+            if (product_name.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                return true;
             }
             return interpreter.GenerateProduct(product_name, Store);
         }
@@ -224,8 +225,7 @@ namespace Project0.ConsoleApp {
             return interpreter.QuantitySelection(input, store_item, customer);
         }
 
-        public void CheckoutPrompt(Customer customer) {
-            Order order = Store.GetCustomerOrders(customer)[0];
+        public void CheckoutPrompt(Order order) {
             Console.WriteLine("\nThank you for your purchase. Order details below:\n");
             Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");
             decimal total_price = 0;

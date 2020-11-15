@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Project0.Library.Models;
+﻿using Project0.Library.Models;
 
 namespace Project0.Library.Interfaces {
     public interface IUserPrompts {
@@ -23,6 +20,8 @@ namespace Project0.Library.Interfaces {
 
         bool RestockPrompt(IUserInputInterpreter interpreter);
 
+        decimal? ProductPricePrompt(IUserInputInterpreter interpreter);
+
         bool NewProductPrompt(IUserInputInterpreter interpreter);
 
         bool UserLookupPrompt(IUserInputInterpreter interpreter);
@@ -31,7 +30,7 @@ namespace Project0.Library.Interfaces {
 
         bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer);
 
-        void CheckoutPrompt(Customer customer);
+        void CheckoutPrompt(Order order);
 
         bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer);
     }

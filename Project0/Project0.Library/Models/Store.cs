@@ -1,9 +1,6 @@
-﻿using Project0.Library.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Xml.Serialization;
 
 // TODO:
 // - display all order history of a store location

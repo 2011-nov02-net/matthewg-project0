@@ -1,10 +1,8 @@
-﻿using Project0.Library;
-using Project0.Library.Interfaces;
+﻿using Project0.Library.Interfaces;
 using Project0.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Project0.ConsoleApp {
     public class ConsoleInputInterpreter : IUserInputInterpreter {
@@ -136,10 +134,29 @@ namespace Project0.ConsoleApp {
         }
 
         public bool RestockLocation(IStoreRepository store, Location location, Product product, int qty) {
+            decimal? price;
+            if (!location.Prices.ContainsKey(product)) {
+                price = Prompts.ProductPricePrompt(this);
+                if (price == null) {
+                    return true;
+                }
+                location.AddPrice(product, (decimal)price);
+            }
             location.AddStock(product, qty);
             store.UpdateLocationStock(location, product);
             store.Save();
             return true;
+        }
+
+        public decimal? ParsePrice(string s) {
+            decimal price;
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                return null;
+            }
+            try {
+                price = decimal.Parse(s);
+            } catch (Exception) { return 0; }
+            return price;
         }
 
         public bool GenerateProduct(string s, IStoreRepository store) {
@@ -208,9 +225,11 @@ namespace Project0.ConsoleApp {
                 return true;
             }
             if (s.Equals("checkout", StringComparison.OrdinalIgnoreCase)) {
-                store.AddOrder(new Order(customer.CurrentLocation, customer, DateTime.Now));
+                Order order = new Order(customer.CurrentLocation, customer, DateTime.Now);
+                store.AddOrder(order);
                 store.Save();
                 customer.CurrentLocation = null;
+                Prompts.CheckoutPrompt(order);
                 return false;
             }
             if (s.Equals("back", StringComparison.OrdinalIgnoreCase)) {

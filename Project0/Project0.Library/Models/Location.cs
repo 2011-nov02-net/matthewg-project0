@@ -1,8 +1,4 @@
-﻿using Project0.Library.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Project0.Library.Models {
     public class Location {
@@ -19,6 +15,7 @@ namespace Project0.Library.Models {
 
         public Location() {
             Stock = new Dictionary<Product, int>();
+            Prices = new Dictionary<Product, decimal>();
         }
 
         public Location(string name, string address, string city, string state, string country, string zip, string phone) {
@@ -30,6 +27,7 @@ namespace Project0.Library.Models {
             Zip = zip;
             Phone = phone;
             Stock = new Dictionary<Product, int>();
+            Prices = new Dictionary<Product, decimal>();
         }
 
         public bool AddStock(Product product, int qty) {
@@ -38,6 +36,17 @@ namespace Project0.Library.Models {
                 return true;
             } else if (qty > 0) {
                 Stock.Add(product, qty);
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddPrice(Product product, decimal price) {
+            if (Prices.ContainsKey(product)) {
+                Prices[product] = price;
+                return true;
+            } else if (price > 0) {
+                Prices.Add(product, price);
                 return true;
             }
             return false;
