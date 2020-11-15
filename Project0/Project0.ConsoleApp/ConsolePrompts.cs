@@ -237,7 +237,6 @@ namespace Project0.ConsoleApp {
             }
             Store.Save();
             Console.WriteLine($"Total: {total_price:c}");
-            
         }
 
         public bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer) {

@@ -155,7 +155,14 @@ namespace Project0.DataModels.Repositories {
         /// <param name="lastName">Customer's last name</param>
         /// <returns>A collection of Business-Model customer objects</returns>
         public ICollection<Library.Models.Customer> GetCustomersByName(string firstName, string lastName) {
-            throw new NotImplementedException();
+            var dbCustomers = _dbContext.Customers.ToList();
+            return dbCustomers.Select(c => new Library.Models.Customer() {
+                Id = c.Id,
+                FirstName = c.FirstName,
+                LastName = c.LastName,
+                Email = c.Email
+            }).Where(c => c.FirstName.Contains(firstName, StringComparison.OrdinalIgnoreCase)
+                        && c.LastName.Contains(lastName, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         /// <summary>
@@ -273,8 +280,8 @@ namespace Project0.DataModels.Repositories {
         /// Retrieve all orders in the database submitted from a particular location
         /// </summary>
         /// <returns>A group of Business-Model order objects</returns>
-        public IEnumerable<Library.Models.Order> GetLocationOrders(Library.Models.Location location) {
-            var dbOrders = _dbContext.Orders.Include(o => o.Location).ToList();
+        public List<Library.Models.Order> GetLocationOrders(Library.Models.Location location) {
+            var dbOrders = _dbContext.Orders.Include(o => o.Location).Include(o => o.OrderContents).OrderByDescending(o => o.Date).ToList();
             List<Library.Models.Order> orders = new List<Library.Models.Order>();
             foreach (var order in dbOrders) {
                 if (order.Location.Id == location.Id) {

@@ -27,7 +27,7 @@ namespace Project0.Library.Interfaces {
         void RemoveProduct(Product product);
         void UpdateLocationStock(Location location, Product product);
         List<Order> GetCustomerOrders(Customer customer);
-        IEnumerable<Order> GetLocationOrders(Location location);
+        List<Order> GetLocationOrders(Location location);
         void Save();
     }
 }
