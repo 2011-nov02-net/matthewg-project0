@@ -69,6 +69,22 @@ namespace Project0.ConsoleApp {
             return interpreter.ValidAdminCommand(input, Store);
         }
 
+        public void OrderHistoryPrompt(IUserInputInterpreter interpreter) {
+            bool? response = false;
+            while (!response ?? true) {
+                Console.WriteLine("Select an option:");
+                Console.WriteLine("[0] All orders");
+                Console.WriteLine("[1] Search a customer");
+                Console.WriteLine("[2] Search a location");
+                Console.WriteLine("[cancel] Exit.");
+                string input = Console.ReadLine();
+                response = interpreter.ValidOrderHistoryOption(input, Store);
+                if (response == null) {
+                    break;
+                }
+            }
+        }
+
         public bool NewStoreLocation(IUserInputInterpreter interpreter) {
             Console.WriteLine("Enter the name of the new location.");
             string input = Console.ReadLine();
@@ -176,13 +192,81 @@ namespace Project0.ConsoleApp {
             return true;
         }
 
-        public bool PrintOrderHistory(Customer customer) {
-            ICollection<Order> orders;
-            if (customer == null) {
-                orders = Store.GetOrders();
-            } else {
-                orders = Store.GetCustomerOrders(customer);
+        public Customer CustomerEmailEntry(IUserInputInterpreter interpreter) {
+            while (true) {
+                Console.WriteLine("Enter customer's email address");
+                string input = Console.ReadLine();
+                Customer customer;
+                try {
+                    customer = Store.GetCustomerByEmail(input);
+                } catch (Exception) {
+                    continue;
+                }
+                if (customer != null) {
+                    return customer;
+                }
             }
+        }
+
+        public Location LocationEntry(IUserInputInterpreter interpreter) {
+            int i;
+            string input;
+            Location location;
+            while (true) {
+                Console.WriteLine("Choose a location:");
+                i = 0;
+                foreach (var loc in Store.GetLocations()) {
+                    Console.WriteLine($"[{i++}] {loc.Name}");
+                }
+                Console.WriteLine("[cancel] EXIT");
+                input = Console.ReadLine();
+                bool? response = interpreter.ValidLocation(input, Store, null, out location);
+                if (response == null) {
+                    continue;
+                }
+                if (response == false) {
+                    break;
+                }
+            }
+            return location;
+        }
+
+        public bool PrintOrderHistory() {
+            ICollection<Order> orders = Store.GetOrders();
+            Console.WriteLine();
+            foreach (var order in orders) {
+                Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");
+                decimal total_price = 0;
+                foreach (var item in order.Products) {
+                    decimal item_price = order.PricePaid[item.Key] * item.Value;
+                    total_price += item_price;
+                    Console.WriteLine($"{item.Key.DisplayName} x{item.Value} - {item_price:c}");
+                }
+                Console.WriteLine($"Total: {total_price:c}");
+                Console.WriteLine();
+            }
+            return true;
+        }
+
+        public bool PrintOrderHistory(Customer customer) {
+            ICollection<Order> orders = Store.GetCustomerOrders(customer);
+            Console.WriteLine();
+            foreach (var order in orders) {
+                Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");
+                decimal total_price = 0;
+                foreach (var item in order.Products) {
+                    decimal item_price = order.PricePaid[item.Key] * item.Value;
+                    total_price += item_price;
+                    Console.WriteLine($"{item.Key.DisplayName} x{item.Value} - {item_price:c}");
+                }
+                Console.WriteLine($"Total: {total_price:c}");
+                Console.WriteLine();
+            }
+            return true;
+        }
+
+        public bool PrintOrderHistory(Location location) {
+            ICollection<Order> orders = Store.GetLocationOrders(location);
             Console.WriteLine();
             foreach (var order in orders) {
                 Console.WriteLine($"{order.Time} - {order.Location.Name} - {order.Customer.Email}");

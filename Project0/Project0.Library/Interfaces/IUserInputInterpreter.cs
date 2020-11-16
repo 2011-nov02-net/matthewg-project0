@@ -18,6 +18,8 @@ namespace Project0.Library.Interfaces {
 
         bool? ValidAdminCommand(string s, IStoreRepository store);
 
+        bool? ValidOrderHistoryOption(string s, IStoreRepository store);
+
         bool GenerateLocation(string s, IStoreRepository store);
 
         bool RestockLocation(IStoreRepository store, Location location, Product product, int qty);

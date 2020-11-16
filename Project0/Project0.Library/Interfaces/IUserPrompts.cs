@@ -16,6 +16,8 @@ namespace Project0.Library.Interfaces {
 
         bool? AdminPrompt(IUserInputInterpreter interpreter);
 
+        void OrderHistoryPrompt(IUserInputInterpreter interpreter);
+
         bool NewStoreLocation(IUserInputInterpreter interpreter);
 
         bool RestockPrompt(IUserInputInterpreter interpreter);
@@ -26,7 +28,15 @@ namespace Project0.Library.Interfaces {
 
         bool UserLookupPrompt(IUserInputInterpreter interpreter);
 
+        Customer CustomerEmailEntry(IUserInputInterpreter interpreter);
+
+        Location LocationEntry(IUserInputInterpreter interpreter);
+
+        bool PrintOrderHistory();
+
         bool PrintOrderHistory(Customer customer);
+
+        bool PrintOrderHistory(Location location);
 
         bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer);
 

@@ -121,7 +121,26 @@ namespace Project0.ConsoleApp {
                 return Prompts.UserLookupPrompt(this);
             }
             if (s.Equals("4", StringComparison.OrdinalIgnoreCase)) {
-                return Prompts.PrintOrderHistory(null);
+                Prompts.OrderHistoryPrompt(this);
+                return true;
+            }
+            return false;
+        }
+
+        public bool? ValidOrderHistoryOption(string s, IStoreRepository store) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
+                return Prompts.PrintOrderHistory();
+            }
+            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
+                Customer customer = Prompts.CustomerEmailEntry(this);
+                return Prompts.PrintOrderHistory(customer);
+            }
+            if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
+                Location location = Prompts.LocationEntry(this);
+                return Prompts.PrintOrderHistory(location);
+            }
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                return null;
             }
             return false;
         }

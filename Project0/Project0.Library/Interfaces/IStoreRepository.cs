@@ -6,7 +6,7 @@ namespace Project0.Library.Interfaces {
         List<Location> GetLocations();
         IEnumerable<Customer> GetCustomers();
         ICollection<Customer> GetCustomersByName(string firstName, string lastName);
-        ICollection<Order> GetOrders();
+        List<Order> GetOrders();
         List<Product> GetProducts();
         Location GetLocationById(int id);
         Customer GetCustomerById(int id);

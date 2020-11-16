@@ -5,6 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+// TODO:
+//      documentation with xml comments
+//      orders reject unreasonably high product quantities
+//      
+
 namespace Project0.DataModels.Repositories {
     public class StoreRepository : IStoreRepository {
         private readonly Project0Context _dbContext;
@@ -252,7 +257,7 @@ namespace Project0.DataModels.Repositories {
         /// Retrieve all orders in the database
         /// </summary>
         /// <returns>A group of Business-Model order objects</returns>
-        public ICollection<Library.Models.Order> GetOrders() {
+        public List<Library.Models.Order> GetOrders() {
             var dbOrders = _dbContext.Orders.OrderByDescending(o => o.Date).ToList();
             List<Library.Models.Order> orders = new List<Library.Models.Order>();
             foreach (var order in dbOrders) {
@@ -332,6 +337,7 @@ namespace Project0.DataModels.Repositories {
         public void RemoveProduct(Library.Models.Product product) {
             throw new NotImplementedException();
         }
+
         /// <summary>
         /// Commit transaction to the database
         /// </summary>
