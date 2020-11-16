@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 // TODO:
-//      documentation with xml comments
-//      orders reject unreasonably high product quantities
-//      unit testing
+//      unit testing for database?
 
 namespace Project0.DataModels.Repositories {
     public class StoreRepository : IStoreRepository {

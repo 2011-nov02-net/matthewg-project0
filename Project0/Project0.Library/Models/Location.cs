@@ -38,6 +38,9 @@ namespace Project0.Library.Models {
         /// <returns>True if succeeded in modifying the stock amount. False if there was an attempt to input a negative amount for a non-yet-stocked product</returns>
         public bool AddStock(Product product, int qty) {
             if (Stock.ContainsKey(product)) {
+                if (qty < 0 && System.Math.Abs(qty) > Stock[product]) {
+                    return false;
+                }
                 Stock[product] += qty;
                 return true;
             } else if (qty > 0) {
