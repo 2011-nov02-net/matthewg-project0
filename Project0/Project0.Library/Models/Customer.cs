@@ -23,6 +23,12 @@ namespace Project0.Library.Models {
             CurrentLocation = null;
         }
 
+        /// <summary>
+        /// Add a product and quantity to a customer's cart, subtracting it from the store's stock
+        /// </summary>
+        /// <param name="product">Product object to be added to the cart</param>
+        /// <param name="qty">Integer amount to be added</param>
+        /// <returns>True if product was successfully added to the cart. False if the quantity is less than 1, or if the store does not contain the product.</returns>
         public bool AddToCart(Product product, int qty) {
             if (qty < 1) {
                 return false;
@@ -39,7 +45,16 @@ namespace Project0.Library.Models {
             return false;
         }
 
+        /// <summary>
+        /// Remove an amount of some product from a customer's cart, adding it back to the store's stock
+        /// </summary>
+        /// <param name="product">Product object to be removed from the cart</param>
+        /// <param name="qty">Integer amount to be removed</param>
+        /// <returns>True if the product was successfully removed. False if the quantity is less than 1, or if the store does not contain the product.</returns>
         public bool RemoveFromCart(Product product, int qty) {
+            if (qty < 1) {
+                return false;
+            }
             if (Cart.ContainsKey(product)) {
                 if (Cart[product] > qty) {
                     Cart[product] -= qty;
@@ -53,19 +68,20 @@ namespace Project0.Library.Models {
             return false;
         }
 
+        /// <summary>
+        /// Remove all products from cart.
+        /// </summary>
         public void EmptyCart() {
             foreach (var product in Cart.Keys) {
                 RemoveFromCart(product, Cart[product]);
             }
         }
 
+        /// <summary>
+        /// Set a brand new cart for the customer
+        /// </summary>
         public void NewCart() {
             Cart = new Dictionary<Product, int>();
-        }
-
-        public void LeaveStore() {
-            EmptyCart();
-            CurrentLocation = null;
         }
     }
 }

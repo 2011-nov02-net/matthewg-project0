@@ -17,10 +17,6 @@ using System.Runtime.Serialization;
 // - (optional: some additional business rules, like special deals)
 // - (optional: for at least one product, more than one inventory item decrements when ordering that product)
 
-
-
-
-
 namespace Project0.Library.Models {
     [DataContract(Name = "Store", Namespace = "", IsReference = true)]
     [KnownType(typeof(Customer))]

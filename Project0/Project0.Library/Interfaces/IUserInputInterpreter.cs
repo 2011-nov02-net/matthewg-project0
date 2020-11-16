@@ -16,6 +16,8 @@ namespace Project0.Library.Interfaces {
 
         bool? ValidProduct(string s, IStoreRepository store, out Product product);
 
+        bool? ValidCustomerProduct(string s, Customer customer, out Product product);
+
         bool? ValidAdminCommand(string s, IStoreRepository store);
 
         bool? ValidOrderHistoryOption(string s, IStoreRepository store);
@@ -25,6 +27,8 @@ namespace Project0.Library.Interfaces {
         bool RestockLocation(IStoreRepository store, Location location, Product product, int qty);
 
         decimal? ParsePrice(string s);
+
+        int? ParseQuantity(string s);
 
         bool GenerateProduct(string s, IStoreRepository store);
 

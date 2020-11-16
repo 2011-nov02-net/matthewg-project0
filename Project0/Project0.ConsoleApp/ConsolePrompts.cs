@@ -332,5 +332,37 @@ namespace Project0.ConsoleApp {
             string input = Console.ReadLine();
             return interpreter.CartCommands(input, customer, Store);
         }
+
+        public bool? RemoveProductFromCartPrompt(IUserInputInterpreter interpreter, Customer customer) {
+            bool? response = true;
+            Product product = null;
+            int? qty;
+            while (response ?? true) {
+                Console.WriteLine("Select an item you would like to remove. [cancel] exit.");
+                int i = 0;
+                foreach (var item in customer.Cart) {
+                    Console.WriteLine($"[{i++}] {item.Key.DisplayName} x {item.Value}");
+                }
+                string product_selection = Console.ReadLine();
+                response = interpreter.ValidCustomerProduct(product_selection, customer, out product);
+                if (response == null) {
+                    return true;
+                }
+            }
+
+            while (true) {
+                Console.WriteLine($"How many would you like to remove? Currently holding: {customer.Cart[product]}. [cancel] exit.");
+                string amt = Console.ReadLine();
+                qty = interpreter.ParseQuantity(amt);
+                if (qty == null) {
+                    return true;
+                }
+                if (qty > customer.Cart[product] || qty < 0) {
+                    continue;
+                }
+                break;
+            }
+            return customer.RemoveFromCart(product, (int)qty);
+        }
     }
 }

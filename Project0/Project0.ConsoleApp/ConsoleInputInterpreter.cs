@@ -104,6 +104,23 @@ namespace Project0.ConsoleApp {
             return true;
         }
 
+        public bool? ValidCustomerProduct(string s, Customer customer, out Product product) {
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                product = null;
+                return null;
+            }
+            int product_index;
+            try {
+                product_index = int.Parse(s);
+            } catch (Exception) { product = null; return true; }
+            if (product_index < customer.Cart.Count && product_index >= 0) {
+                product = customer.Cart.ElementAt(product_index).Key;
+                return false;
+            }
+            product = null;
+            return true;
+        }
+
         public bool? ValidAdminCommand(string s, IStoreRepository store) {
             if (s.Equals("logout", StringComparison.OrdinalIgnoreCase)) {
                 return null;
@@ -178,6 +195,17 @@ namespace Project0.ConsoleApp {
             return price;
         }
 
+        public int? ParseQuantity(string s) {
+            int qty;
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                return null;
+            }
+            try {
+                qty = int.Parse(s);
+            } catch (Exception) { return 0; }
+            return qty;
+        }
+
         public bool GenerateProduct(string s, IStoreRepository store) {
             Product product = new Product() { DisplayName = s };
             store.AddProduct(product);
@@ -197,6 +225,7 @@ namespace Project0.ConsoleApp {
         public KeyValuePair<Product, int>? ProductSelection(string s, Customer customer, out int exit_status) {
             if (s.Equals("leave", StringComparison.OrdinalIgnoreCase)) {
                 customer.EmptyCart();
+                customer.CurrentLocation = null;
                 exit_status = 1;
                 return null;
             }
@@ -240,13 +269,14 @@ namespace Project0.ConsoleApp {
         }
 
         public bool? CartCommands(string s, Customer customer, IStoreRepository store) {
-            if (s.Equals("remove", StringComparison.OrdinalIgnoreCase)) { // TODO: functionality to remove a product from the cart
-                return true;
+            if (s.Equals("remove", StringComparison.OrdinalIgnoreCase)) {
+                return Prompts.RemoveProductFromCartPrompt(this, customer);
             }
             if (s.Equals("checkout", StringComparison.OrdinalIgnoreCase)) {
                 Order order = new Order(customer.CurrentLocation, customer, DateTime.Now);
                 store.AddOrder(order);
                 store.Save();
+                customer.NewCart();
                 customer.CurrentLocation = null;
                 Prompts.CheckoutPrompt(order);
                 return false;

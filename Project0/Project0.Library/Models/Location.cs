@@ -30,6 +30,12 @@ namespace Project0.Library.Models {
             Prices = new Dictionary<Product, decimal>();
         }
 
+        /// <summary>
+        /// Add some number of items to the store's stock
+        /// </summary>
+        /// <param name="product">Product object thats stock is to be modified</param>
+        /// <param name="qty">Integer value by how much to modify the stock</param>
+        /// <returns>True if succeeded in modifying the stock amount. False if there was an attempt to input a negative amount for a non-yet-stocked product</returns>
         public bool AddStock(Product product, int qty) {
             if (Stock.ContainsKey(product)) {
                 Stock[product] += qty;
@@ -41,15 +47,23 @@ namespace Project0.Library.Models {
             return false;
         }
 
+        /// <summary>
+        /// Set some price amount associated with a product
+        /// </summary>
+        /// <param name="product">Product object thats price is to be modified</param>
+        /// <param name="price">decimal floating point number</param>
+        /// <returns>True if price was successfully set. False if price is 0 or below</returns>
         public bool AddPrice(Product product, decimal price) {
+            if (price <= 0) {
+                return false;
+            }
             if (Prices.ContainsKey(product)) {
                 Prices[product] = price;
                 return true;
-            } else if (price > 0) {
+            } else {
                 Prices.Add(product, price);
                 return true;
             }
-            return false;
         }
 
     }
