@@ -16,6 +16,10 @@ namespace Project0.DataModels.Repositories {
             _dbContext = context ?? throw new ArgumentNullException("Null Context.");
         }
 
+        //
+        // Adding Methods
+        //
+
         /// <summary>
         /// Add a new customer to the database
         /// </summary>
@@ -104,6 +108,10 @@ namespace Project0.DataModels.Repositories {
 
             _dbContext.Products.Add(dbProduct);
         }
+
+        //
+        // Fetching Methods
+        //
 
         /// <summary>
         /// Retrieve Business-Model Customer object from database via customer id
@@ -320,6 +328,10 @@ namespace Project0.DataModels.Repositories {
             }).ToList();
         }
 
+        //
+        // Deletion Methods
+        //
+
         public void RemoveCustomer(Library.Models.Customer customer) {
             throw new NotImplementedException();
         }
@@ -336,12 +348,9 @@ namespace Project0.DataModels.Repositories {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Commit transaction to the database
-        /// </summary>
-        public void Save() {
-            _dbContext.SaveChanges();
-        }
+        //
+        // Update Methods
+        //
 
         /// <summary>
         /// Update the amount of some product that a particular location has in stock
@@ -391,6 +400,13 @@ namespace Project0.DataModels.Repositories {
 
         public void UpdateProduct(Library.Models.Product product) {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Commit transaction to the database
+        /// </summary>
+        public void Save() {
+            _dbContext.SaveChanges();
         }
     }
 }
