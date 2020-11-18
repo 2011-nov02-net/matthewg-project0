@@ -307,7 +307,7 @@ namespace Project0.ConsoleApp {
             Console.WriteLine($"Total: {total_price:c}");
         }
 
-        public bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer, out bool checkout) {
+        public void CartPrompt(IUserInputInterpreter interpreter, Customer customer, out bool checkout) {
             while (true) {
                 Console.WriteLine("\nEnter [remove] to remove an item from your cart, [checkout] to complete your order, or [back] to continue shopping.\n");
                 Console.WriteLine("Your Cart:");
@@ -317,7 +317,7 @@ namespace Project0.ConsoleApp {
                 string input = Console.ReadLine();
                 interpreter.CartCommands(input, customer, Store, out bool exit, out checkout);
                 if (exit) {
-                    return true;
+                    return;
                 }
             }
         }

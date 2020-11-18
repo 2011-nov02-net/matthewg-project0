@@ -42,7 +42,7 @@ namespace Project0.Library.Interfaces {
 
         void CheckoutPrompt(Order order);
 
-        bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer, out bool checkout);
+        void CartPrompt(IUserInputInterpreter interpreter, Customer customer, out bool checkout);
 
         void RemoveProductFromCartPrompt(IUserInputInterpreter interpreter, Customer customer);
     }
