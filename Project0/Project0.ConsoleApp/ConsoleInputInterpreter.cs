@@ -111,7 +111,7 @@ namespace Project0.ConsoleApp {
             try {
                 product_index = int.Parse(s);
             } catch (Exception) { return null; }
-            if (product_index < store.GetProducts().Count + 1&& product_index > 0) {
+            if (product_index < store.GetProducts().Count + 1 && product_index > 0) {
                 return store.GetProducts()[product_index - 1];
             }
             return null;
@@ -297,8 +297,8 @@ namespace Project0.ConsoleApp {
             } catch (Exception) {
                 return null;
             }
-            if (product_index < customer.CurrentLocation.Stock.Count && product_index >= 0) {
-                return customer.CurrentLocation.Stock.ElementAt(product_index);
+            if (product_index < customer.CurrentLocation.Stock.Count + 2 && product_index > 0) {
+                return customer.CurrentLocation.Stock.ElementAt(product_index - 2);
             }
             return null;
         }
