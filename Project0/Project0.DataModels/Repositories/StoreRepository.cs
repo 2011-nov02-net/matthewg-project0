@@ -406,7 +406,19 @@ namespace Project0.DataModels.Repositories {
         /// Commit transaction to the database
         /// </summary>
         public void Save() {
-            _dbContext.SaveChanges();
+            try {
+                _dbContext.SaveChanges();
+            } catch (DbUpdateException) {
+                var transaction = _dbContext.ChangeTracker.Entries()
+                    .Where(x => x.State == EntityState.Added ||
+                                x.State == EntityState.Deleted ||
+                                x.State == EntityState.Modified).ToList();
+
+                foreach (var entry in transaction) {
+                    entry.State = EntityState.Detached;
+                }
+                throw;
+            }
         }
     }
 }
