@@ -8,42 +8,42 @@ namespace Project0.Library.Interfaces {
 
         IUser StartupPrompt(IUserInputInterpreter interpreter);
 
-        IUser RegisterPrompt(IUserInputInterpreter interpreter);
+        IUser RegisterPrompt(IUserInputInterpreter interpreter, out bool exit);
 
         void ReturningCustomerPrompt(IUser customer);
 
-        bool? StoreEntryPrompt(IUserInputInterpreter interpreter, Customer customer);
+        Location StoreEntryPrompt(IUserInputInterpreter interpreter, Customer customer, out bool exit);
 
-        bool? AdminPrompt(IUserInputInterpreter interpreter);
+        void AdminPrompt(IUserInputInterpreter interpreter, out bool exit);
 
         void OrderHistoryPrompt(IUserInputInterpreter interpreter);
 
-        bool NewStoreLocation(IUserInputInterpreter interpreter);
+        void NewStoreLocation(IUserInputInterpreter interpreter);
 
-        bool RestockPrompt(IUserInputInterpreter interpreter);
+        void RestockPrompt(IUserInputInterpreter interpreter);
 
-        decimal? ProductPricePrompt(IUserInputInterpreter interpreter);
+        decimal ProductPricePrompt(IUserInputInterpreter interpreter, out bool exit);
 
-        bool NewProductPrompt(IUserInputInterpreter interpreter);
+        void NewProductPrompt(IUserInputInterpreter interpreter);
 
-        bool UserLookupPrompt(IUserInputInterpreter interpreter);
+        void UserLookupPrompt(IUserInputInterpreter interpreter);
 
         Customer CustomerEmailEntry(IUserInputInterpreter interpreter);
 
         Location LocationEntry(IUserInputInterpreter interpreter);
 
-        bool PrintOrderHistory();
+        void PrintOrderHistory();
 
-        bool PrintOrderHistory(Customer customer);
+        void PrintOrderHistory(Customer customer);
 
-        bool PrintOrderHistory(Location location);
+        void PrintOrderHistory(Location location);
 
-        bool? LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer);
+        void LocationInventoryPrompt(IUserInputInterpreter interpreter, Customer customer, out bool exit);
 
         void CheckoutPrompt(Order order);
 
-        bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer);
+        bool? CartPrompt(IUserInputInterpreter interpreter, Customer customer, out bool checkout);
 
-        bool? RemoveProductFromCartPrompt(IUserInputInterpreter interpreter, Customer customer);
+        void RemoveProductFromCartPrompt(IUserInputInterpreter interpreter, Customer customer);
     }
 }

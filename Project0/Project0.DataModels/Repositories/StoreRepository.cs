@@ -277,12 +277,12 @@ namespace Project0.DataModels.Repositories {
         /// </summary>
         /// <returns>A list of Business-Model order objects</returns>
         public List<Library.Models.Order> GetCustomerOrders(Library.Models.Customer customer) {
-            var dbOrders = _dbContext.Orders.Include(o => o.Customer).Include(o => o.OrderContents).OrderByDescending(o => o.Date).ToList();
+            var dbOrders = _dbContext.Orders
+                .Where(o => o.CustomerId == customer.Id)
+                .OrderByDescending(o => o.Date).ToList();
             List<Library.Models.Order> orders = new List<Library.Models.Order>();
             foreach (var order in dbOrders) {
-                if (order.Customer.Id == customer.Id) {
-                    orders.Add(GetOrderById(order.Id));
-                }
+                orders.Add(GetOrderById(order.Id));
             }
             return orders;
         }
@@ -292,12 +292,12 @@ namespace Project0.DataModels.Repositories {
         /// </summary>
         /// <returns>A group of Business-Model order objects</returns>
         public List<Library.Models.Order> GetLocationOrders(Library.Models.Location location) {
-            var dbOrders = _dbContext.Orders.Include(o => o.Location).Include(o => o.OrderContents).OrderByDescending(o => o.Date).ToList();
+            var dbOrders = _dbContext.Orders
+                .Where(o => o.LocationId == location.Id)
+                .OrderByDescending(o => o.Date).ToList();
             List<Library.Models.Order> orders = new List<Library.Models.Order>();
             foreach (var order in dbOrders) {
-                if (order.Location.Id == location.Id) {
-                    orders.Add(GetOrderById(order.Id));
-                }
+                orders.Add(GetOrderById(order.Id));
             }
             return orders;
         }

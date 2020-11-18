@@ -50,8 +50,7 @@ namespace Project0.DataModels.Entities
             {
                 entity.ToTable("Location");
 
-                entity.HasIndex(e => e.Address, "UQ__Location__7D0C3F3263A96C06")
-                    .IsUnique();
+                entity.HasIndex(e => e.Address);
 
                 entity.Property(e => e.Address)
                     .IsRequired()

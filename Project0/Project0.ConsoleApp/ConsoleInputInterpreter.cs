@@ -20,7 +20,10 @@ namespace Project0.ConsoleApp {
             if (s.Equals("register", StringComparison.OrdinalIgnoreCase)) {
                 IUser new_user = null;
                 while (new_user == null) {
-                    new_user = Prompts.RegisterPrompt(this);
+                    new_user = Prompts.RegisterPrompt(this, out bool exit);
+                    if (exit) {
+                        return null;
+                    }
                 }
                 return new_user;
             }
@@ -28,22 +31,26 @@ namespace Project0.ConsoleApp {
                 // DataPersistence.Write(store, "../../../store_data.xml");
                 Environment.Exit(0);
             }
-            var customer = store.GetCustomerByEmail(s);
-            if (customer != null) {
-                Prompts.ReturningCustomerPrompt(customer);
-                return customer;
+            Customer customer;
+            try {
+                customer = store.GetCustomerByEmail(s);
+            } catch (InvalidOperationException) {
+                Console.WriteLine("Invalid input.");
+                return null;
             }
-            Console.WriteLine("Invalid input.");
-            return null;
+            Prompts.ReturningCustomerPrompt(customer);
+            return customer;
         }
 
-        public string[] ParseNewCustomer(string s) {
+        public string[] ParseNewCustomer(string s, out bool exit) {
+            exit = false;
             if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                exit = true;
                 return null;
             }
             string pattern = "\\w+\\s\\w+\\s(.+)(@)(.+)[.](.+)";
             if (!System.Text.RegularExpressions.Regex.IsMatch(s, pattern)) {
-                return null;
+                return new string[0];
             }
             return s.Split();
         }
@@ -52,117 +59,124 @@ namespace Project0.ConsoleApp {
             Customer customer = new Customer(details[0], details[1], details[2]);
             try {
                 store.AddCustomer(customer);
+                store.Save();
             } catch (Exception) {
                 return null;
             }
-            store.Save();
             return customer;
         }
 
-        public bool? ValidLocation(string s, IStoreRepository store, Customer customer, out Location location) {
-            if (s.Equals("logout", StringComparison.OrdinalIgnoreCase)) {
-                location = null;
+        public Location ValidLocation(string s, IStoreRepository store, Customer customer, out bool exit) {
+            exit = false;
+            if (s.Equals("logout", StringComparison.OrdinalIgnoreCase) || s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                exit = true;
                 return null;
             }
             if (s.Equals("history", StringComparison.OrdinalIgnoreCase) && customer != null) {
-                location = null;
-                return Prompts.PrintOrderHistory(customer);
-            }
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                location = null;
+                Prompts.PrintOrderHistory(customer);
                 return null;
             }
+            Location location;
             int location_index;
             try {
                 location_index = int.Parse(s);
-            } catch (Exception) { location = null;  return true; }
+            } catch (Exception) { return null; }
             if (location_index < store.GetLocations().Count && location_index >= 0) {
                 location = store.GetLocations()[location_index];
                 if (customer != null) {
                     customer.CurrentLocation = location;
                 }
-                return false;
+                return location;
             }
-            location = null;
-            return true;
+            return null;
         }
 
-        public bool? ValidProduct(string s, IStoreRepository store, out Product product) {
+        public Product ValidProduct(string s, IStoreRepository store, out bool exit) {
+            exit = false;
             if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                product = null;
+                exit = true;
                 return null;
             }
             int product_index;
             try {
                 product_index = int.Parse(s);
-            } catch (Exception) { product = null; return true; }
+            } catch (Exception) { return null; }
             if (product_index < store.GetProducts().Count && product_index >= 0) {
-                product = store.GetProducts()[product_index];
-                return false;
+                return store.GetProducts()[product_index];
             }
-            product = null;
-            return true;
+            return null;
         }
 
-        public bool? ValidCustomerProduct(string s, Customer customer, out Product product) {
+        public Product ValidCustomerProduct(string s, Customer customer, out bool exit) {
+            exit = false;
             if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                product = null;
+                exit = true;
                 return null;
             }
             int product_index;
             try {
                 product_index = int.Parse(s);
-            } catch (Exception) { product = null; return true; }
+            } catch (Exception) { return null; }
             if (product_index < customer.Cart.Count && product_index >= 0) {
-                product = customer.Cart.ElementAt(product_index).Key;
-                return false;
+                return customer.Cart.ElementAt(product_index).Key;
             }
-            product = null;
-            return true;
+            return null;
         }
 
-        public bool? ValidAdminCommand(string s, IStoreRepository store) {
+        public void ValidAdminCommand(string s, out bool exit) {
+            exit = false;
             if (s.Equals("logout", StringComparison.OrdinalIgnoreCase)) {
-                return null;
+                exit = true;
             }
             if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
-                return Prompts.NewStoreLocation(this);
+                Prompts.NewStoreLocation(this);
             }
             if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
-                return Prompts.RestockPrompt(this);
+                Prompts.RestockPrompt(this);
             }
             if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
-                return Prompts.NewProductPrompt(this);
+                Prompts.NewProductPrompt(this);
             }
             if (s.Equals("3", StringComparison.OrdinalIgnoreCase)) {
-                return Prompts.UserLookupPrompt(this);
+                Prompts.UserLookupPrompt(this);
             }
             if (s.Equals("4", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.OrderHistoryPrompt(this);
-                return true;
             }
-            return false;
         }
 
-        public bool? ValidOrderHistoryOption(string s, IStoreRepository store) {
+        public void ValidOrderHistoryOption(string s, out bool exit) {
+            exit = false;
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                exit = true;
+                return;
+            }
             if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
-                return Prompts.PrintOrderHistory();
+                Prompts.PrintOrderHistory();
             }
             if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
                 Customer customer = Prompts.CustomerEmailEntry(this);
-                return Prompts.PrintOrderHistory(customer);
+                if (customer == null) {
+                    return;
+                }
+                Prompts.PrintOrderHistory(customer);
             }
             if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
                 Location location = Prompts.LocationEntry(this);
-                return Prompts.PrintOrderHistory(location);
+                if (location == null) {
+                    return;
+                }
+                Prompts.PrintOrderHistory(location);
             }
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                return null;
-            }
-            return false;
+            
         }
 
-        public bool GenerateLocation(string s, IStoreRepository store) {
+        public bool GenerateLocation(string s, IStoreRepository store, out bool exit) {
+            exit = false;
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                exit = true;
+                return false;
+            }
             Location location = new Location(s, "", "", "", "", "", ""); // TODO: Console prompts for location info
             store.AddLocation(location);
             store.Save();
@@ -170,13 +184,13 @@ namespace Project0.ConsoleApp {
         }
 
         public bool RestockLocation(IStoreRepository store, Location location, Product product, int qty) {
-            decimal? price;
+            decimal price;
             if (!location.Prices.ContainsKey(product)) {
-                price = Prompts.ProductPricePrompt(this);
-                if (price == null) {
-                    return true;
+                price = Prompts.ProductPricePrompt(this, out bool exit);
+                if (exit) {
+                    return false;
                 }
-                location.AddPrice(product, (decimal)price);
+                location.AddPrice(product, price);
             }
             location.AddStock(product, qty);
             store.UpdateLocationStock(location, product);
@@ -184,10 +198,12 @@ namespace Project0.ConsoleApp {
             return true;
         }
 
-        public decimal? ParsePrice(string s) {
+        public decimal ParsePrice(string s, out bool exit) {
             decimal price;
+            exit = false;
             if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                return null;
+                exit = true;
+                return 0;
             }
             try {
                 price = decimal.Parse(s);
@@ -195,10 +211,12 @@ namespace Project0.ConsoleApp {
             return price;
         }
 
-        public int? ParseQuantity(string s) {
+        public int ParseQuantity(string s, out bool exit) {
             int qty;
+            exit = false;
             if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
-                return null;
+                exit = true;
+                return 0;
             }
             try {
                 qty = int.Parse(s);
@@ -213,31 +231,53 @@ namespace Project0.ConsoleApp {
             return true;
         }
 
-        public ICollection<Customer> UserLookup(string s, IStoreRepository store) {
+        public ICollection<Customer> UserLookup(string s, IStoreRepository store, out bool exit) {
+            exit = false;
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                exit = true;
+                return null;
+            }
             string pattern = "\\w+\\s\\w+";
             if (!System.Text.RegularExpressions.Regex.IsMatch(s, pattern)) {
                 return null;
             }
             string[] name = s.Split();
-            return store.GetCustomersByName(name[0], name[1]);
+            ICollection<Customer> customers;
+            try {
+                customers = store.GetCustomersByName(name[0], name[1]);
+            } catch (InvalidOperationException) {
+                return null;
+            }
+            return customers;
         }
 
-        public KeyValuePair<Product, int>? ProductSelection(string s, Customer customer, out int exit_status) {
+        public Customer CustomerEmailLookup(string s, IStoreRepository store, out bool exit) {
+            exit = false;
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                exit = true;
+                return null;
+            }
+            Customer customer;
+            try {
+                customer = store.GetCustomerByEmail(s);
+            } catch (InvalidOperationException) {
+                return null;
+            }
+            return customer;
+        }
+
+        public KeyValuePair<Product, int>? ProductSelection(string s, Customer customer, out bool exit) {
+            exit = false;
             if (s.Equals("leave", StringComparison.OrdinalIgnoreCase)) {
                 customer.EmptyCart();
                 customer.CurrentLocation = null;
-                exit_status = 1;
+                exit = true;
                 return null;
             }
             if (s.Equals("cart", StringComparison.OrdinalIgnoreCase)) {
-                bool? response = true;
-                while (response ?? false) {
-                    response = Prompts.CartPrompt(this, customer);
-                }
-                if (response != null) {
-                    exit_status = 2;
-                } else {
-                    exit_status = 0;
+                Prompts.CartPrompt(this, customer, out bool checkout);
+                if (checkout) {
+                    exit = true;
                 }
                 return null;
             }
@@ -245,32 +285,32 @@ namespace Project0.ConsoleApp {
             try {
                 product_index = int.Parse(s);
             } catch (Exception) {
-                exit_status = 0;
                 return null;
             }
             if (product_index < customer.CurrentLocation.Stock.Count && product_index >= 0) {
-                exit_status = 0;
                 return customer.CurrentLocation.Stock.ElementAt(product_index);
             }
-            exit_status = 0;
             return null;
         }
 
-        public bool QuantitySelection(string s, KeyValuePair<Product, int>? purchase_item, Customer customer) {
+        public void QuantitySelection(string s, KeyValuePair<Product, int>? purchase_item, Customer customer) {
             int qty;
+            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+                return;
+            }
             try {
                 qty = int.Parse(s);
-            } catch (Exception) { return true; }
+            } catch (Exception) { return; }
             if (qty <= purchase_item.Value.Value && qty > 0) {
                 customer.AddToCart(purchase_item.Value.Key, qty);
-                return true;
             }
-            return true;
         }
 
-        public bool? CartCommands(string s, Customer customer, IStoreRepository store) {
+        public void CartCommands(string s, Customer customer, IStoreRepository store, out bool exit, out bool checkout) {
+            exit = false;
+            checkout = false;
             if (s.Equals("remove", StringComparison.OrdinalIgnoreCase)) {
-                return Prompts.RemoveProductFromCartPrompt(this, customer);
+                Prompts.RemoveProductFromCartPrompt(this, customer);
             }
             if (s.Equals("checkout", StringComparison.OrdinalIgnoreCase)) {
                 Order order = new Order(customer.CurrentLocation, customer, DateTime.Now);
@@ -279,12 +319,12 @@ namespace Project0.ConsoleApp {
                 customer.NewCart();
                 customer.CurrentLocation = null;
                 Prompts.CheckoutPrompt(order);
-                return false;
+                exit = true;
+                checkout = true;
             }
             if (s.Equals("back", StringComparison.OrdinalIgnoreCase)) {
-                return null;
+                exit = true;
             }
-            return true;
         }
         
     }

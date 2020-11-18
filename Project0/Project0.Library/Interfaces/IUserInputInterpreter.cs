@@ -8,36 +8,38 @@ namespace Project0.Library.Interfaces {
 
         IUser ValidUserID(string s, IStoreRepository store);
 
-        string[] ParseNewCustomer(string s);
+        string[] ParseNewCustomer(string s, out bool exit);
 
         Customer RegisterCustomer(string[] details, IStoreRepository store);
 
-        bool? ValidLocation(string s, IStoreRepository store, Customer customer, out Location location);
+        Location ValidLocation(string s, IStoreRepository store, Customer customer, out bool exit);
 
-        bool? ValidProduct(string s, IStoreRepository store, out Product product);
+        Product ValidProduct(string s, IStoreRepository store, out bool exit);
 
-        bool? ValidCustomerProduct(string s, Customer customer, out Product product);
+        Product ValidCustomerProduct(string s, Customer customer, out bool exit);
 
-        bool? ValidAdminCommand(string s, IStoreRepository store);
+        void ValidAdminCommand(string s, out bool exit);
 
-        bool? ValidOrderHistoryOption(string s, IStoreRepository store);
+        void ValidOrderHistoryOption(string s, out bool exit);
 
-        bool GenerateLocation(string s, IStoreRepository store);
+        bool GenerateLocation(string s, IStoreRepository store, out bool exit);
 
         bool RestockLocation(IStoreRepository store, Location location, Product product, int qty);
 
-        decimal? ParsePrice(string s);
+        decimal ParsePrice(string s, out bool exit);
 
-        int? ParseQuantity(string s);
+        int ParseQuantity(string s, out bool exit);
 
         bool GenerateProduct(string s, IStoreRepository store);
 
-        ICollection<Customer> UserLookup(string s, IStoreRepository store);
+        ICollection<Customer> UserLookup(string s, IStoreRepository store, out bool exit);
 
-        KeyValuePair<Product, int>? ProductSelection(string s, Customer customer, out int exit_status);
+        Customer CustomerEmailLookup(string s, IStoreRepository store, out bool exit);
 
-        bool QuantitySelection(string s, KeyValuePair<Product, int>? purchase_item, Customer customer);
+        KeyValuePair<Product, int>? ProductSelection(string s, Customer customer, out bool exit);
 
-        bool? CartCommands(string s, Customer customer, IStoreRepository store);
+        void QuantitySelection(string s, KeyValuePair<Product, int>? purchase_item, Customer customer);
+
+        void CartCommands(string s, Customer customer, IStoreRepository store, out bool exit, out bool checkout);
     }
 }

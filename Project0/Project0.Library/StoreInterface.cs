@@ -33,36 +33,28 @@ namespace Project0.Library {
         }
 
         private void LoginCustomer(Customer customer) {
-            bool? response = true;
-            while (response ?? true) {
-                response = _prompts.StoreEntryPrompt(_interpreter, customer);
-                if (response == null) {
+            Location loc = null;
+            while (loc == null) {
+                loc = _prompts.StoreEntryPrompt(_interpreter, customer, out bool exit);
+                if (exit) {
                     return;
-                } else if (response == false) {
-                    response = SendCustomerToStoreLocation(customer);
                 }
             }
+            SendCustomerToStoreLocation(customer);
         }
 
         private void LoginAdmin() {
-            bool? response = true;
-            while (response ?? true) {
-                response = _prompts.AdminPrompt(_interpreter);
-                if (response == null) {
-                    return;
-                }
+            bool exit = false;
+            while (!exit) {
+                _prompts.AdminPrompt(_interpreter, out exit);
             }
         }
 
-        private bool SendCustomerToStoreLocation(Customer customer) {
-            bool? response = true;
-            while (response ?? true) {
-                response = _prompts.LocationInventoryPrompt(_interpreter, customer);
-                if (response == null) {
-                    return true;
-                }
+        private void SendCustomerToStoreLocation(Customer customer) {
+            bool exit = false;
+            while (!exit) {
+                _prompts.LocationInventoryPrompt(_interpreter, customer, out exit);
             }
-            return false;
         }
     }
 }
