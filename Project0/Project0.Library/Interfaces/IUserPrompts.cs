@@ -12,7 +12,9 @@ namespace Project0.Library.Interfaces {
 
         void ReturningCustomerPrompt(IUser customer);
 
-        Location StoreEntryPrompt(IUserInputInterpreter interpreter, Customer customer, out bool exit);
+        void EnterStoreLocationPrompt(IUserInputInterpreter interpreter, Customer customer);
+
+        void StoreEntryPrompt(IUserInputInterpreter interpreter, Customer customer, out bool exit);
 
         void AdminPrompt(IUserInputInterpreter interpreter, out bool exit);
 

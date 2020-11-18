@@ -21,9 +21,6 @@ namespace Project0.ConsoleApp {
 
             IStoreRepository storeRepository = new StoreRepository(context);
 
-            /*string path = "../../../store_data.xml";
-            Store store = DataPersistence.Read(path);*/
-
             var prompts = new ConsolePrompts(storeRepository);
             var interpreter = new ConsoleInputInterpreter(prompts);
             var user_interface = new StoreInterface(prompts, interpreter);

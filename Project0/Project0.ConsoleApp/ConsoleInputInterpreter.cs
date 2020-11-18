@@ -44,7 +44,7 @@ namespace Project0.ConsoleApp {
 
         public string[] ParseNewCustomer(string s, out bool exit) {
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return null;
             }
@@ -68,12 +68,8 @@ namespace Project0.ConsoleApp {
 
         public Location ValidLocation(string s, IStoreRepository store, Customer customer, out bool exit) {
             exit = false;
-            if (s.Equals("logout", StringComparison.OrdinalIgnoreCase) || s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase) || s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
-                return null;
-            }
-            if (s.Equals("history", StringComparison.OrdinalIgnoreCase) && customer != null) {
-                Prompts.PrintOrderHistory(customer);
                 return null;
             }
             Location location;
@@ -81,19 +77,33 @@ namespace Project0.ConsoleApp {
             try {
                 location_index = int.Parse(s);
             } catch (Exception) { return null; }
-            if (location_index < store.GetLocations().Count && location_index >= 0) {
-                location = store.GetLocations()[location_index];
+            if (location_index < store.GetLocations().Count + 1 && location_index > 0) {
+                location = store.GetLocations()[location_index - 1];
                 if (customer != null) {
                     customer.CurrentLocation = location;
+                    Prompts.LocationInventoryPrompt(this, customer, out exit);
                 }
                 return location;
             }
             return null;
         }
 
+        public void CustomerOperations(string s, Customer customer, out bool exit) {
+            exit = false;
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
+                exit = true;
+            }
+            if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
+                Prompts.PrintOrderHistory(customer);
+            }
+            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
+                Prompts.EnterStoreLocationPrompt(this, customer);
+            }
+        }
+
         public Product ValidProduct(string s, IStoreRepository store, out bool exit) {
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return null;
             }
@@ -101,15 +111,15 @@ namespace Project0.ConsoleApp {
             try {
                 product_index = int.Parse(s);
             } catch (Exception) { return null; }
-            if (product_index < store.GetProducts().Count && product_index >= 0) {
-                return store.GetProducts()[product_index];
+            if (product_index < store.GetProducts().Count + 1&& product_index > 0) {
+                return store.GetProducts()[product_index - 1];
             }
             return null;
         }
 
         public Product ValidCustomerProduct(string s, Customer customer, out bool exit) {
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return null;
             }
@@ -117,51 +127,51 @@ namespace Project0.ConsoleApp {
             try {
                 product_index = int.Parse(s);
             } catch (Exception) { return null; }
-            if (product_index < customer.Cart.Count && product_index >= 0) {
-                return customer.Cart.ElementAt(product_index).Key;
+            if (product_index < customer.Cart.Count + 1 && product_index > 0) {
+                return customer.Cart.ElementAt(product_index - 1).Key;
             }
             return null;
         }
 
-        public void ValidAdminCommand(string s, out bool exit) {
+        public void AdminOperations(string s, out bool exit) {
             exit = false;
-            if (s.Equals("logout", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
             }
-            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.NewStoreLocation(this);
             }
-            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.RestockPrompt(this);
             }
-            if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("3", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.NewProductPrompt(this);
             }
-            if (s.Equals("3", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("4", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.UserLookupPrompt(this);
             }
-            if (s.Equals("4", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("5", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.OrderHistoryPrompt(this);
             }
         }
 
         public void ValidOrderHistoryOption(string s, out bool exit) {
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return;
             }
-            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.PrintOrderHistory();
             }
-            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
                 Customer customer = Prompts.CustomerEmailEntry(this);
                 if (customer == null) {
                     return;
                 }
                 Prompts.PrintOrderHistory(customer);
             }
-            if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("3", StringComparison.OrdinalIgnoreCase)) {
                 Location location = Prompts.LocationEntry(this);
                 if (location == null) {
                     return;
@@ -173,7 +183,7 @@ namespace Project0.ConsoleApp {
 
         public bool GenerateLocation(string s, IStoreRepository store, out bool exit) {
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return false;
             }
@@ -201,7 +211,7 @@ namespace Project0.ConsoleApp {
         public decimal ParsePrice(string s, out bool exit) {
             decimal price;
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return 0;
             }
@@ -214,7 +224,7 @@ namespace Project0.ConsoleApp {
         public int ParseQuantity(string s, out bool exit) {
             int qty;
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return 0;
             }
@@ -233,7 +243,7 @@ namespace Project0.ConsoleApp {
 
         public ICollection<Customer> UserLookup(string s, IStoreRepository store, out bool exit) {
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return null;
             }
@@ -253,7 +263,7 @@ namespace Project0.ConsoleApp {
 
         public Customer CustomerEmailLookup(string s, IStoreRepository store, out bool exit) {
             exit = false;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
                 return null;
             }
@@ -268,13 +278,13 @@ namespace Project0.ConsoleApp {
 
         public KeyValuePair<Product, int>? ProductSelection(string s, Customer customer, out bool exit) {
             exit = false;
-            if (s.Equals("leave", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 customer.EmptyCart();
                 customer.CurrentLocation = null;
                 exit = true;
                 return null;
             }
-            if (s.Equals("cart", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.CartPrompt(this, customer, out bool checkout);
                 if (checkout) {
                     exit = true;
@@ -295,7 +305,7 @@ namespace Project0.ConsoleApp {
 
         public void QuantitySelection(string s, KeyValuePair<Product, int>? purchase_item, Customer customer) {
             int qty;
-            if (s.Equals("cancel", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 return;
             }
             try {
@@ -309,10 +319,13 @@ namespace Project0.ConsoleApp {
         public void CartCommands(string s, Customer customer, IStoreRepository store, out bool exit, out bool checkout) {
             exit = false;
             checkout = false;
-            if (s.Equals("remove", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("1", StringComparison.OrdinalIgnoreCase)) {
                 Prompts.RemoveProductFromCartPrompt(this, customer);
             }
-            if (s.Equals("checkout", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("2", StringComparison.OrdinalIgnoreCase)) {
+                if (customer.Cart.Count == 0) {
+                    return;
+                }
                 Order order = new Order(customer.CurrentLocation, customer, DateTime.Now);
                 store.AddOrder(order);
                 store.Save();
@@ -322,7 +335,7 @@ namespace Project0.ConsoleApp {
                 exit = true;
                 checkout = true;
             }
-            if (s.Equals("back", StringComparison.OrdinalIgnoreCase)) {
+            if (s.Equals("0", StringComparison.OrdinalIgnoreCase)) {
                 exit = true;
             }
         }

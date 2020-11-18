@@ -12,13 +12,15 @@ namespace Project0.Library.Interfaces {
 
         Customer RegisterCustomer(string[] details, IStoreRepository store);
 
+        void CustomerOperations(string s, Customer customer, out bool exit);
+
         Location ValidLocation(string s, IStoreRepository store, Customer customer, out bool exit);
 
         Product ValidProduct(string s, IStoreRepository store, out bool exit);
 
         Product ValidCustomerProduct(string s, Customer customer, out bool exit);
 
-        void ValidAdminCommand(string s, out bool exit);
+        void AdminOperations(string s, out bool exit);
 
         void ValidOrderHistoryOption(string s, out bool exit);
 
