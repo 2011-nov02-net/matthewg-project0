@@ -63,7 +63,7 @@ namespace Project0.ConsoleApp {
             } catch (Exception) {
                 return null;
             }
-            return customer;
+            return store.GetCustomerByEmail(details[2]);
         }
 
         public Location ValidLocation(string s, IStoreRepository store, Customer customer, out bool exit) {
