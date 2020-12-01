@@ -1,12 +1,14 @@
 -- Generate Database for Project 0
 
+--Remove existing tables
 DROP TABLE IF EXISTS OrderContents
 DROP TABLE IF EXISTS [Order]
-DROP TABLE IF EXISTS LocationInventory
 DROP TABLE IF EXISTS Product
+DROP TABLE IF EXISTS LocationInventory
 DROP TABLE IF EXISTS Customer
 DROP TABLE IF EXISTS Location
 
+--Create new tables
 CREATE TABLE Location (
 	Id INT PRIMARY KEY IDENTITY,
 	Name NVARCHAR(99) NOT NULL,
