@@ -1,6 +1,12 @@
 -- Generate Database for Project 0
 
+DROP TABLE IF EXISTS OrderContents
+DROP TABLE IF EXISTS [Order]
+DROP TABLE IF EXISTS LocationInventory
+DROP TABLE IF EXISTS Product
+DROP TABLE IF EXISTS Customer
 DROP TABLE IF EXISTS Location
+
 CREATE TABLE Location (
 	Id INT PRIMARY KEY IDENTITY,
 	Name NVARCHAR(99) NOT NULL,
@@ -12,21 +18,19 @@ CREATE TABLE Location (
 	Phone NVARCHAR(99),
 )
 
-DROP TABLE IF EXISTS Customer
 CREATE TABLE Customer (
 	Id INT PRIMARY KEY IDENTITY,
 	FirstName NVARCHAR(99) NOT NULL,
 	LastName NVARCHAR(99) NOT NULL,
-	Email NVARCHAR(99) UNIQUE NOT NULL
+	Email NVARCHAR(99) UNIQUE NOT NULL,
+	Class INT NOT NULL DEFAULT 1
 )
 
-DROP TABLE IF EXISTS Product
 CREATE TABLE Product (
 	Id INT PRIMARY KEY IDENTITY,
 	Name NVARCHAR(99) NOT NULL
 )
 
-DROP TABLE IF EXISTS LocationInventory
 CREATE TABLE LocationInventory (
 	LocationId INT NOT NULL FOREIGN KEY REFERENCES Location (Id),
 	ProductId INT NOT NULL FOREIGN KEY REFERENCES Product (Id),
@@ -35,7 +39,6 @@ CREATE TABLE LocationInventory (
 	PRIMARY KEY (LocationId, ProductId)
 )
 
-DROP TABLE IF EXISTS [Order]
 CREATE TABLE [Order] (
 	Id INT PRIMARY KEY IDENTITY,
 	CustomerId INT NOT NULL FOREIGN KEY REFERENCES Customer (Id),
@@ -43,7 +46,6 @@ CREATE TABLE [Order] (
 	[Date] DATETIME NOT NULL
 )
 
-DROP TABLE IF EXISTS OrderContents
 CREATE TABLE OrderContents (
 	OrderId INT NOT NULL FOREIGN KEY REFERENCES [Order] (Id),
 	ProductId INT NOT NULL FOREIGN KEY REFERENCES Product (Id),
@@ -59,9 +61,9 @@ INSERT INTO Location (Name, Address, City, State, Country, PostalCode, Phone) VA
 	('Walmart Supercenter', '4550 Kester Mill Rd', 'Winston-Salem', 'NC', 'United States', '27103', '(336) 760-9868'),
 	('Walmart Neighborhood Market', '180 Harvey St', 'Winston-Salem', 'NC', 'United States', '27103', '(336)293-9331'),
 	('Walmart Supercenter', '3475 Pkwy Village Ct', 'Winston-Salem', 'NC', 'United States', '27127', '(336)771-1011');
-INSERT INTO Customer (FirstName, LastName, Email) VALUES
-	('Matt', 'Goodman', 'matthew.goodman@revature.net'),
-	('Nick', 'Escalona', 'nick.escalona@revature.net')
+INSERT INTO Customer (FirstName, LastName, Email, Class) VALUES
+	('Matt', 'Goodman', 'matthew.goodman@revature.net', 2),
+	('Nick', 'Escalona', 'nick.escalona@revature.net', 1)
 INSERT INTO Product (Name) VALUES
 	('Watermelon'),
 	('Strawberries'),
