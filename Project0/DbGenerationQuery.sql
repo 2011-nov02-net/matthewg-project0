@@ -1,6 +1,14 @@
 -- Generate Database for Project 0
 
+--Remove existing tables
+DROP TABLE IF EXISTS OrderContents
+DROP TABLE IF EXISTS [Order]
+DROP TABLE IF EXISTS Product
+DROP TABLE IF EXISTS LocationInventory
+DROP TABLE IF EXISTS Customer
 DROP TABLE IF EXISTS Location
+
+--Create new tables
 CREATE TABLE Location (
 	Id INT PRIMARY KEY IDENTITY,
 	Name NVARCHAR(99) NOT NULL,
@@ -12,7 +20,7 @@ CREATE TABLE Location (
 	Phone NVARCHAR(99),
 )
 
-DROP TABLE IF EXISTS Customer
+
 CREATE TABLE Customer (
 	Id INT PRIMARY KEY IDENTITY,
 	FirstName NVARCHAR(99) NOT NULL,
@@ -20,13 +28,12 @@ CREATE TABLE Customer (
 	Email NVARCHAR(99) UNIQUE NOT NULL
 )
 
-DROP TABLE IF EXISTS Product
+
 CREATE TABLE Product (
 	Id INT PRIMARY KEY IDENTITY,
 	Name NVARCHAR(99) NOT NULL
 )
 
-DROP TABLE IF EXISTS LocationInventory
 CREATE TABLE LocationInventory (
 	LocationId INT NOT NULL FOREIGN KEY REFERENCES Location (Id),
 	ProductId INT NOT NULL FOREIGN KEY REFERENCES Product (Id),
@@ -35,7 +42,6 @@ CREATE TABLE LocationInventory (
 	PRIMARY KEY (LocationId, ProductId)
 )
 
-DROP TABLE IF EXISTS [Order]
 CREATE TABLE [Order] (
 	Id INT PRIMARY KEY IDENTITY,
 	CustomerId INT NOT NULL FOREIGN KEY REFERENCES Customer (Id),
@@ -43,7 +49,6 @@ CREATE TABLE [Order] (
 	[Date] DATETIME NOT NULL
 )
 
-DROP TABLE IF EXISTS OrderContents
 CREATE TABLE OrderContents (
 	OrderId INT NOT NULL FOREIGN KEY REFERENCES [Order] (Id),
 	ProductId INT NOT NULL FOREIGN KEY REFERENCES Product (Id),
